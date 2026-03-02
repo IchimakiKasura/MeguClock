@@ -30,22 +30,24 @@ bool dones = false;
 void setup() {
     initialize();
     Draw.Header(0);
-    Draw.Bottom(strcpy_P(bottomTextBuffer, bottomMessages[rand(46)]));
+    Draw.Bottom(strcpy_P(bottomTextBuffer, bottomMessages[rand(45)]));
 }
 
 void loop() {
     updateJingle();
 
+    // RTC NOW HOT-SWAPPABLE? NANII??
     isRTC = M_RTC::rtcConnected();
-
-    // barely does shit, unless the rtc isn't connected in the first place
-    if (isRTC) {
+    if (isRTC && !lastRTCState) {
+        Draw.ReDraw();
+    } else if (!isRTC && lastRTCState) {
+        DateTime zero(0,0,0,0,0,0);
+        Draw.ReDraw(zero);
+    } else if (isRTC) {
         now = rtc.now();
-    } else {
-        Draw.Time(DateTime(0,0,0,0,0,0));
-        Draw.Date(DateTime(0,0,0,0,0,0));
-        return;
     }
+    lastRTCState = isRTC;
+
     
     adjustHeld = digitalRead(BTN_ADJUST) == LOW;
 
@@ -115,6 +117,7 @@ void initialize() {             // goofy ahh init
     Draw.FakeLoading();
     
     Wire.begin();
+    Wire.setWireTimeout(3000, true);
     rtc.begin();
 
     pinMode(BTN_SELECT, INPUT_PULLUP);

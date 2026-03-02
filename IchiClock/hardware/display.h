@@ -6,6 +6,7 @@ class DrawUI {
     private:
         Adafruit_ST7735* _tft;
         int16_t _clockX;
+        uint16_t _screenWidth, _screenHeight;
         bool _clockBoundsCached = false,
              _timeDrawnErr = false,
              _dateDrawnErr = false;
@@ -25,8 +26,8 @@ class DrawUI {
             return editMode && selected==f && !adjustHeld && !blinkState;
         }
 
-        void _clearLine(const int16_t &y,const int16_t &h) {
-            _tft->fillRect(3, y, _tft->width() - 8, h, 0x18A8); 
+        void _clearLine(const int16_t &y, const int16_t &h) {
+            _tft->fillRect(3, y, _screenWidth - 8, h, 0x18A8); 
         }
 
         void _CenteredText(const char* t,const int16_t &y,const int16_t &s,const uint16_t &c) {
@@ -35,17 +36,17 @@ class DrawUI {
             _tft->setTextSize(s);
             _tft->setTextColor(c);
             _tft->getTextBounds(t, 0, 0, &x1, &y1, &w, &h);
-            _tft->setCursor((_tft->width() - w) / 2, y);
+            _tft->setCursor((_screenWidth - w) / 2, y);
             _tft->print(t);
         }
 
         void _ProgressBar(int percent) {
             byte x = 40, y = 145;
-            _tft->fillRect(x,     y,     42,               1, WHITE);        // top
-            _tft->fillRect(x,     y+1,   1,                4, WHITE);        // left
-            _tft->fillRect(x+41,  y+1,   1,                4, WHITE);        // right
-            _tft->fillRect(x,     y+5,   42,               1, WHITE);        // bottom
-            _tft->fillRect(x+1,   y+1,   (40*percent)/100, 4, YELLOW);       // fill
+            _tft->drawFastHLine(x, y, 42, WHITE);           // top
+            _tft->drawFastVLine(x, y+1, 4, WHITE);          // left
+            _tft->drawFastVLine(x+41, y+1, 4, WHITE);       // right
+            _tft->drawFastHLine(x, y+5, 42, WHITE);         // bottom
+            _tft->fillRect(x+1, y+1, (40*percent)/100, 4, YELLOW);  // fill
         }
 
         void _Logo(int x, int y, uint8_t scale) {
@@ -53,8 +54,8 @@ class DrawUI {
                 Rect r;
                 memcpy_P(&r, &rects[i], sizeof r);
                 uint16_t color = pgm_read_word(&megumin_colors[r.colorId]);
-                tft.fillRect(x+((r.x-14)+r.xOffs)*scale,y+(r.y-13)*scale,r.w*scale,r.h*scale,color);
-                tft.fillRect(x+(r.x-14)*scale,y+((r.y-13)+r.yOffs)*scale,r.w*scale,r.h*scale,color);
+                _tft->fillRect(x+((r.x-14)+r.xOffs)*scale,y+(r.y-13)*scale,r.w*scale,r.h*scale,color);
+                _tft->fillRect(x+(r.x-14)*scale,y+((r.y-13)+r.yOffs)*scale,r.w*scale,r.h*scale,color);
             }
         }
     public:
@@ -65,6 +66,8 @@ class DrawUI {
 
         void init(Adafruit_ST7735& tft) {
             _tft = &tft;
+            _screenWidth = _tft->width();
+            _screenHeight = _tft->height();
         }
 
         void Header(byte t) {
@@ -97,7 +100,6 @@ class DrawUI {
 
             if(isRTC)
             {
-                _timeDrawnErr = true;
                 if (!_hideField(FIELD_HOUR)) sprintf(Buf, "%02d", h12);
                 _tft->setTextColor(_hideField(FIELD_HOUR) ? RED : M_COLORS::ClockColor());
                 _tft->print(_hideField(FIELD_HOUR) ? "--" : Buf);
@@ -108,14 +110,13 @@ class DrawUI {
                 if (!_hideField(FIELD_MIN))  sprintf(Buf, "%02d", t.minute());
                 _tft->setTextColor(_hideField(FIELD_MIN) ? RED : M_COLORS::ClockColor());
                 _tft->print(_hideField(FIELD_MIN) ? "--" : Buf);
+
             } else {
-                if(_timeDrawnErr) _tft->print("??:??");
-                _timeDrawnErr = false;
+                _tft->print("??:??");
             }
 
             _clearLine(AMPM_Y, 20);
             _CenteredText(ampm, AMPM_Y, AMPM_SIZE, _hideField(FIELD_AMPM) ? RED : M_COLORS::ClockColor());
-
             // _Logo(64,80,3);
         }
 
@@ -134,7 +135,6 @@ class DrawUI {
 
             if(isRTC)
             {
-                _dateDrawnErr = false;
                 _tft->print(hideMo ? "--- " : strcpy_P(Buf, monthNames[t.month()-1]));
     
                 if (!hideDay) sprintf(Buf, "%02d, ", t.day());
@@ -145,8 +145,7 @@ class DrawUI {
     
                 _CenteredText(strcpy_P(Buf, daysFull[now.dayOfTheWeek()]), DATE_Y + 10, DATE_SIZE, c);
             } else {
-                if(_dateDrawnErr) _tft->print("RtcError");
-                _dateDrawnErr = true;
+                _tft->print("  RtcError");
             }
         }
 
@@ -173,7 +172,6 @@ class DrawUI {
         }
 
         void CheckeredBorders(uint16_t fillColor = 0, uint16_t dashColor = 0) {
-
             uint16_t hY[] = {1, 38, 128, 158};
             static bool swapColors = false;
 
@@ -189,17 +187,17 @@ class DrawUI {
             swapColors = !swapColors;
             
             for (int i = 0; i < 4; i++) {
-                for (int x = 1; x < _tft->width() - 1; x += 8) {
-                    _tft->fillRect(x      , hY[i], 4, 2, dashColor);
-                    _tft->fillRect(x + 4  , hY[i], 4, 2, fillColor);
+                for (int x = 1; x < _screenWidth - 1; x += 8) {
+                    _tft->fillRect(x, hY[i], 4, 2, dashColor);
+                    _tft->fillRect(x + 4, hY[i], 4, 2, fillColor);
                 }
             }
 
-            for (int y = 1; y < _tft->height(); y += 8) {
-                _tft->fillRect(1        , y    , 2, 4, dashColor);
-                _tft->fillRect(1        , y + 4, 2, 4, fillColor);
-                _tft->fillRect(_tft->width()-2, y+2  , 2, 4, dashColor);
-                _tft->fillRect(_tft->width()-2, y+6  , 2, 4, fillColor);
+            for (int y = 1; y < _screenHeight; y += 8) {
+                _tft->fillRect(1, y, 2, 4, dashColor);
+                _tft->fillRect(1, y + 4, 2, 4, fillColor);
+                _tft->fillRect(_screenWidth-2, y+2, 2, 4, dashColor);
+                _tft->fillRect(_screenWidth-2, y+6, 2, 4, fillColor);
             }
         }
 

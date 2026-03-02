@@ -117,7 +117,6 @@ void setup() {
       tft.fillRect(17, 11,  4,  1, M_YELLOW);
 
       tft.fillRect(10, 10,  7,  1, M_YELLOW);
-      tft.fillRect(10, 10,  7,  1, M_YELLOW);
 
   //HAIR
       tft.fillRect( 5, 14,  2,  3, M_HAIR);

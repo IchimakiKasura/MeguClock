@@ -87,8 +87,7 @@ const char bottomMessages[][20] PROGMEM = {
   "Baud mismatch?",
   "Calibrating luck",
   "Works on my PC",
-  "Hardware issue",
-  "Final explosion!"
+  "Hardware issue"
 };
 
 enum Field { FIELD_HOUR, FIELD_MIN, FIELD_AMPM, FIELD_MONTH, FIELD_DAY, FIELD_YEAR };
@@ -98,6 +97,7 @@ bool editMode = false,
      adjustHeld = false,
      h_edited = false,
      m_edited = false,
+     lastRTCState = false,
      isRTC;
 
 DateTime now, lastTime;

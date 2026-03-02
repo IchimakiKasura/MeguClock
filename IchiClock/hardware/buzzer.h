@@ -1,7 +1,5 @@
 #pragma once
 
-extern DrawUI Draw;
-
 const uint16_t melody[5][43] PROGMEM = {
     // 0 - Konosuba ED
     { 523, 523, 587, 659, 659, 784, 880, 1047, 880, 784, 659, 659,
@@ -109,8 +107,7 @@ void updateJingle() {
         jingleState.playing = false;
         noTone(BUZZER);
         M_COLORS::Load();
-        Draw.Time();
-        Draw.Date();
+        Draw.ReDraw();
         return;
     }
 

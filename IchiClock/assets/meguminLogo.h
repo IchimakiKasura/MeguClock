@@ -1,14 +1,26 @@
 #pragma once
 const uint16_t megumin_colors[] PROGMEM = {
-  0x0000,0x41EB,0x2907,0x4A18,0x65BE,0x632F,0x3188,0xBEFF,0x959B,0x28CA,0x4A76
+  0x0000, // 0 Black
+  0x41EB, // 1 Hat
+  0x2907, // 2 Hat shadow
+  0x4A18, // 3 Red
+  0x65BE, // 4 Yellow
+  0x632F, // 5 Hair
+  0x3188, // 6 Hair shadow
+  0xBEFF, // 7 Skin
+  0x959B, // 8 Skin shadow
+  0x28CA, // 9 High eye
+  0x4A76  // 10 Low eye
 };
 struct Rect {
   uint8_t x, y, w, h, colorId;
-  int8_t  xOffs; // optional X offsets
-  int8_t  yOffs; // optional Y offsets
+  int8_t  xOffs;
+  int8_t  yOffs;
 };
 #define _nf 0,0
 #define hat_shadow 1,0,1
+// if ur saying that I should've used the image2cpp, well fuck. its not necesarily efficient as I'll make another
+// algo for making white background into transparrent.
 // LITERALLY OPTIMIZED FROM 110 TO JUST 64 OBJECTS USING FANCY ALGORITHM
 const Rect rects[] PROGMEM = {
   {11, 0, 8, 1, 0, _nf }, {10, 1,10, 1, 0, _nf }, { 9, 2,12, 1, 0, _nf }, { 8, 3,14, 1, 0, _nf }, { 7, 4,16, 1, 0, _nf }, { 7, 5,18, 1, 0, _nf },
@@ -23,3 +35,5 @@ const Rect rects[] PROGMEM = {
   { 5,14, 1, 1, 6,16, 0}, { 8,19, 1, 1, 6,10, 0}, { 8,14, 4, 4, 7, 7, 0}, { 9,16, 9, 3, 7, _nf }, {12,15, 1, 1, 7, _nf }, { 9,13, 2, 1, 8, 7, 0},
   { 9,14, 2, 1, 0, 7, 0}, { 9,15, 2, 1, 9, 7, 0}, { 9,16, 2, 1,10, 7, 0}, {12,17, 3, 1, 0, _nf }
 };
+
+// Thinking of creating a simple tool that converts images to this format, would save a lot of time for future projects
