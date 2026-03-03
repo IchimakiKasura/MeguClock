@@ -31,7 +31,7 @@ const char monthNames[][5] PROGMEM = {
   "JUL ","AUG ","SEP ","OCT ","NOV ","DEC "
 };
 
-const char daysFull[][9] PROGMEM = {
+const char daysFull[][10] PROGMEM = {
   "Sunday",
   "Monday",
   "Tuesday",

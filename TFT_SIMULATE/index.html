@@ -1,172 +1,183 @@
 <!DOCTYPE html>
 <html>
-<head>
-<meta charset="UTF-8">
-<style>
-body {margin: 0;background: #222;display: flex;justify-content: center;align-items: center;height: 100vh;}
-canvas {image-rendering: pixelated;border: 2px solid white;}
-</style>
-</head>
-<body>
-<canvas id="tft"></canvas>
-<script>
-const WIDTH = 128;const HEIGHT = 160;const SCALE = 4;
-const canvas = document.getElementById("tft");
-canvas.width = WIDTH * SCALE;canvas.height = HEIGHT * SCALE;
-const ctx = canvas.getContext("2d");
-ctx.imageSmoothingEnabled = false;
 
-function fillRectPerPixel(x, y, w, h, color) {
-  ctx.fillStyle = color;
-  for (let i = 0; i < w; i++) {
-    for (let j = 0; j < h; j++) {ctx.fillRect((x + i) * SCALE,(y + j) * SCALE,SCALE,SCALE)}}
-}
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="styles.css">
+        <title>TFT Generator</title>
+    </head>
 
-function fillScreen(color) {ctx.fillStyle = color; ctx.fillRect(0, 0, canvas.width, canvas.height)}
+    <body>
+        <div id="lmao">
+            <div id="mainContainer">
+                <div id="canvasSection">
+                    <div id="canvasContainer">
+                        <canvas id="tft"></canvas>
+                    </div>
+                    <div id="controls">
+                        <label style="color: #aaa; font-size: 12px;">Color:</label>
+                        <input type="color" id="colorPicker" value="#000000">
+                        <button id="clearCanvasBtn">Clear Canvas</button>
+                        <label class="checkLabel">
+                            <input type="checkbox" id="livePreview" checked>
+                            Live Preview
+                        </label>
+                        <label class="checkLabel">
+                            <input type="checkbox" id="rgb565Toggle">
+                            RGB565
+                        </label>
+                        <label class="checkLabel">
+                            <input type="checkbox" id="bgrToggle">
+                            BGR
+                        </label>
+                    </div>
+                    <div id="coordDisplay"></div>
+                    <div id="zoomLevel">Zoom: 1x (Scroll to zoom)</div>
+                    
+                    <div id="sizeControls">
+                        <div class="size-input-group">
+                            <label for="canvasWidth">Width:</label>
+                            <input type="number" id="canvasWidth" value="128" min="32" max="512">
+                        </div>
+                        <div class="size-input-group">
+                            <label for="canvasHeight">Height:</label>
+                            <input type="number" id="canvasHeight" value="160" min="32" max="512">
+                        </div>
+                        <label class="checkLabel">
+                            <input type="checkbox" id="gridToggle" checked>
+                            Show Grid
+                        </label>
+                    </div>
+                    <br>    
+                </div>
 
-fillScreen("white");
-        //x y w h
-        //outline
-            fillRectPerPixel(11,  0,  8,  1, '#000000')
-            fillRectPerPixel(10,  1, 10,  1, '#000000')
-            fillRectPerPixel( 9,  2, 12,  1, '#000000')
-            fillRectPerPixel( 8,  3, 14,  1, '#000000')
-            fillRectPerPixel( 7,  4, 16,  1, '#000000')
-            fillRectPerPixel( 7,  5, 18,  1, '#000000')
-            fillRectPerPixel( 6,  6, 15, 14, '#000000')
-            fillRectPerPixel( 5,  8, 17, 12, '#000000')
-            fillRectPerPixel( 3, 11, 21,  2, '#000000')
-            fillRectPerPixel( 2, 12, 23,  2, '#000000')
-            fillRectPerPixel( 1, 13, 25,  1, '#000000')
-            fillRectPerPixel( 0, 14,  3,  1, '#000000')
-            fillRectPerPixel( 4, 11, 19,  6, '#000000')
-            fillRectPerPixel(24, 14,  3,  1, '#000000')
-            fillRectPerPixel( 6, 20,  3,  2, '#000000')
-            fillRectPerPixel(18, 20,  3,  2, '#000000')
-            fillRectPerPixel( 7, 22,  1,  1, '#000000')
-            fillRectPerPixel(19, 22,  1,  1, '#000000')
-            fillRectPerPixel(23,  6,  1,  1, '#000000')
-            fillRectPerPixel(25,  6,  1,  1, '#000000')
-            fillRectPerPixel(24,  7,  2,  1, '#000000')
+                <div id="codeSection">
+                    <label>Generated tft.fillRect() Code: <i>Watch out for overlapping pixels</i></label>
+                    <textarea id="codeOutput" spellcheck="false">
+tft.fillRect(11,  0,  8,  1, "0x000000");
+tft.fillRect(10,  1, 10,  1, "0x000000");
+tft.fillRect( 9,  2, 12,  1, "0x000000");
+tft.fillRect( 8,  3, 14,  1, "0x000000");
+tft.fillRect( 7,  4, 16,  1, "0x000000");
+tft.fillRect( 7,  5, 18,  1, "0x000000");
+tft.fillRect( 6,  6, 15, 14, "0x000000");
+tft.fillRect( 5,  8, 17, 12, "0x000000");
+tft.fillRect( 3, 11, 21,  2, "0x000000");
+tft.fillRect( 2, 12, 23,  2, "0x000000");
+tft.fillRect( 1, 13, 25,  1, "0x000000");
+tft.fillRect( 0, 14,  3,  1, "0x000000");
+tft.fillRect( 4, 11, 19,  6, "0x000000");
+tft.fillRect(24, 14,  3,  1, "0x000000");
+tft.fillRect( 6, 20,  3,  2, "0x000000");
+tft.fillRect(18, 20,  3,  2, "0x000000");
+tft.fillRect( 7, 22,  1,  1, "0x000000");
+tft.fillRect(19, 22,  1,  1, "0x000000");
+tft.fillRect(23,  6,  1,  1, "0x000000");
+tft.fillRect(25,  6,  1,  1, "0x000000");
+tft.fillRect(24,  7,  2,  1, "0x000000");
+tft.fillRect(11,  1,  5,  1, "0x7F6469");
+tft.fillRect(12,  2,  3,  1, "0x7F6469");
+tft.fillRect(13,  3,  1,  1, "0x7F6469");
+tft.fillRect(12,  4,  3,  1, "0x7F6469");
+tft.fillRect( 8,  5,  2,  1, "0x7F6469");
+tft.fillRect(17,  5,  2,  1, "0x7F6469");
+tft.fillRect( 8,  4,  1,  1, "0x7F6469");
+tft.fillRect(18,  4,  1,  1, "0x7F6469");
+tft.fillRect( 7, 10,  3,  1, "0x7F6469");
+tft.fillRect(10,  9,  7,  1, "0x7F6469");
+tft.fillRect(17, 10,  3,  1, "0x7F6469");
+tft.fillRect( 5, 11,  1,  1, "0x7F6469");
+tft.fillRect(21, 11,  1,  1, "0x7F6469");
+tft.fillRect(17,  1,  2,  1, "0x624F55");
+tft.fillRect(18,  2,  2,  1, "0x624F55");
+tft.fillRect(19,  3,  2,  1, "0x624F55");
+tft.fillRect(20,  4,  2,  1, "0x624F55");
+tft.fillRect( 9,  3,  3,  1, "0x9C363B");
+tft.fillRect(15,  3,  3,  1, "0x9C363B");
+tft.fillRect(10,  2,  1,  3, "0x9C363B");
+tft.fillRect(16,  2,  1,  3, "0x9C363B");
+tft.fillRect( 7,  7,  3,  2, "0x9C363B");
+tft.fillRect(17,  7,  3,  2, "0x9C363B");
+tft.fillRect(10,  6,  7,  2, "0x9C363B");
+tft.fillRect(20,  8,  1,  2, "0x9C363B");
+tft.fillRect(10,  3,  1,  1, "0xC39151");
+tft.fillRect(16,  3,  1,  1, "0xC39151");
+tft.fillRect( 7,  7,  1,  1, "0xC39151");
+tft.fillRect(18,  7,  1,  1, "0xC39151");
+tft.fillRect(10,  6,  1,  1, "0xC39151");
+tft.fillRect(14,  6,  1,  1, "0xC39151");
+tft.fillRect(24,  6,  1,  1, "0xC39151");
+tft.fillRect( 2, 13,  1,  1, "0xC39151");
+tft.fillRect(24, 13,  1,  1, "0xC39151");
+tft.fillRect( 6,  8,  1,  2, "0xC39151");
+tft.fillRect( 9,  7,  3,  1, "0xC39151");
+tft.fillRect(13,  7,  3,  1, "0xC39151");
+tft.fillRect(17,  8,  3,  1, "0xC39151");
+tft.fillRect( 3, 12,  3,  1, "0xC39151");
+tft.fillRect(21, 12,  3,  1, "0xC39151");
+tft.fillRect( 6, 11,  4,  1, "0xC39151");
+tft.fillRect(17, 11,  4,  1, "0xC39151");
+tft.fillRect(10, 10,  7,  1, "0xC39151");
+tft.fillRect( 5, 14,  2,  3, "0x938485");
+tft.fillRect(20, 14,  2,  3, "0x938485");
+tft.fillRect( 6, 17,  1,  3, "0x938485");
+tft.fillRect(20, 17,  1,  3, "0x938485");
+tft.fillRect( 7, 20,  1,  2, "0x938485");
+tft.fillRect(19, 20,  1,  2, "0x938485");
+tft.fillRect(12, 13,  3,  1, "0x938485");
+tft.fillRect(13, 14,  1,  1, "0x938485");
+tft.fillRect(12, 12,  3,  1, "0x675C59");
+tft.fillRect( 6, 13,  2,  1, "0x675C59");
+tft.fillRect(19, 13,  2,  1, "0x675C59");
+tft.fillRect( 5, 14,  1,  1, "0x675C59");
+tft.fillRect(21, 14,  1,  1, "0x675C59");
+tft.fillRect( 8, 19,  1,  1, "0x675C59");
+tft.fillRect(18, 19,  1,  1, "0x675C59");
+tft.fillRect( 8, 14,  4,  4, "0xCBB099");
+tft.fillRect(15, 14,  4,  4, "0xCBB099");
+tft.fillRect( 9, 16,  9,  3, "0xCBB099");
+tft.fillRect(12, 15,  1,  1, "0xCBB099");
+tft.fillRect( 9, 13,  2,  1, "0x8D745E");
+tft.fillRect(16, 13,  2,  1, "0x8D745E");
+tft.fillRect( 9, 14,  2,  1, "0x000000");
+tft.fillRect( 9, 15,  2,  1, "0x561B2F");
+tft.fillRect( 9, 16,  2,  1, "0xB34D4C");
+tft.fillRect(16, 14,  2,  1, "0x000000");
+tft.fillRect(16, 15,  2,  1, "0x561B2F");
+tft.fillRect(16, 16,  2,  1, "0xB34D4C");
+tft.fillRect(12, 17,  3,  1, "0x000000");
+                    </textarea>
+                    <div id="codeButtons">
+                        <button id="copyCoreBtn">Copy Code</button>
+                        <button id="copyArduinoBtn">Copy Arduino Format</button>
+                        <button id="optimizeBtn">Optimize Code</button>
+                    </div>
 
-        // HAT
-            fillRectPerPixel(11,  1,  5,  1, '#7f6469')
-            fillRectPerPixel(12,  2,  3,  1, '#7f6469')
-            fillRectPerPixel(13,  3,  1,  1, '#7f6469')
-            fillRectPerPixel(12,  4,  3,  1, '#7f6469')
+                    <div id="optimizedCodeSection">
+                        <label>Optimized Code (with X/Y Offsets): <i>Carefull, sometimes not accurate but yeah</i></label>
+                        <textarea id="optimizedCodeOutput" spellcheck="false" readonly></textarea>
+                        <div id="optimizedCodeButtons">
+                            <button id="copyOptimizedBtn">Copy Optimized Code</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
             
-            fillRectPerPixel( 8,  5,  2,  1, '#7f6469')
-            fillRectPerPixel(17,  5,  2,  1, '#7f6469')
-            
-            fillRectPerPixel( 8,  4,  1,  1, '#7f6469')
-            fillRectPerPixel(18,  4,  1,  1, '#7f6469')
+        </div>
 
-            fillRectPerPixel( 7, 10,  3,  1, '#7f6469')
-            fillRectPerPixel(10,  9,  7,  1, '#7f6469')
-            fillRectPerPixel(17, 10,  3,  1, '#7f6469')
+        <p style="color:white;font-style: italic;">
+            NOTE:<br>
+            - This tool is designed for creating graphics for TFT displays, and it generates code in the format of tft.fillRect(x, y, width, height, color).<br>
+            <br>
+            - The generated code may contain overlapping pixels, which can be optimized for better performance. Use the "Optimize Code" button to attempt to reduce overlaps, but be aware that it may not always produce perfect results. Always review the optimized code before using it in your project.<br>
+            <br>
+            - Some functions are still a bit buggy, so make sure to double-check the generated code and test it on your hardware. This tool is meant to be a starting point for your graphics creation, and manual adjustments may be necessary for optimal results.
+        </p>
+        <br>
+        <br>
+        <p style="color:white;font-style: italic;">Created by Ichimaki</p>
 
-            fillRectPerPixel( 5, 11,  1,  1, '#7f6469')
-            fillRectPerPixel(21, 11,  1,  1, '#7f6469')
-            
-            // SHADOW
-            fillRectPerPixel(17,  1,  2,  1, '#624f55')
-            fillRectPerPixel(18,  2,  2,  1, '#624f55')
-            fillRectPerPixel(19,  3,  2,  1, '#624f55')
-            fillRectPerPixel(20,  4,  2,  1, '#624f55')
-
-        // RED
-        fillRectPerPixel( 9,  3,  3,  1, '#9c363b')
-        fillRectPerPixel(15,  3,  3,  1, '#9c363b')
-
-        fillRectPerPixel(10,  2,  1,  3, '#9c363b')
-        fillRectPerPixel(16,  2,  1,  3, '#9c363b')
-
-        fillRectPerPixel( 7,  7,  3,  2, '#9c363b')
-        fillRectPerPixel(17,  7,  3,  2, '#9c363b')
-
-        fillRectPerPixel(10,  6,  7,  2, '#9c363b')
-        fillRectPerPixel(20,  8,  1,  2, '#9c363b')
-
-        //YELLOW
-            fillRectPerPixel(10,  3,  1,  1, '#c39151')
-            fillRectPerPixel(16,  3,  1,  1, '#c39151')
-
-            fillRectPerPixel( 7,  7,  1,  1, '#c39151')
-            fillRectPerPixel(18,  7,  1,  1, '#c39151')
-
-            fillRectPerPixel(10,  6,  1,  1, '#c39151')
-            fillRectPerPixel(14,  6,  1,  1, '#c39151')
-            fillRectPerPixel(24,  6,  1,  1, '#c39151')
-
-
-            fillRectPerPixel( 2, 13,  1,  1, '#c39151')
-            fillRectPerPixel(24, 13,  1,  1, '#c39151')
-
-            fillRectPerPixel( 6,  8,  1,  2, '#c39151')
-            fillRectPerPixel( 9,  7,  3,  1, '#c39151')
-
-            fillRectPerPixel(13,  7,  3,  1, '#c39151')
-            fillRectPerPixel(17,  8,  3,  1, '#c39151')
-
-            fillRectPerPixel( 3, 12,  3,  1, '#c39151')
-            fillRectPerPixel(21, 12,  3,  1, '#c39151')
-
-            fillRectPerPixel( 6, 11,  4,  1, '#c39151')
-            fillRectPerPixel(17, 11,  4,  1, '#c39151')
-
-            fillRectPerPixel(10, 10,  7,  1, '#c39151')
-            fillRectPerPixel(10, 10,  7,  1, '#c39151')
-
-        //HAIR
-            fillRectPerPixel( 5, 14,  2,  3, '#938485')
-            fillRectPerPixel(20, 14,  2,  3, '#938485')
-            
-            fillRectPerPixel( 6, 17,  1,  3, '#938485')
-            fillRectPerPixel(20, 17,  1,  3, '#938485')
-            
-            fillRectPerPixel( 7, 20,  1,  2, '#938485')
-            fillRectPerPixel(19, 20,  1,  2, '#938485')
-            
-            fillRectPerPixel(12, 13,  3,  1, '#938485')
-            fillRectPerPixel(13, 14,  1,  1, '#938485')
-        
-            // SHADOW
-            fillRectPerPixel(12, 12,  3,  1, '#675c59')
-
-            fillRectPerPixel( 6, 13,  2,  1, '#675c59')
-            fillRectPerPixel(19, 13,  2,  1, '#675c59')
-            
-            fillRectPerPixel( 5, 14,  1,  1, '#675c59')
-            fillRectPerPixel(21, 14,  1,  1, '#675c59')
-            
-            fillRectPerPixel( 8, 19,  1,  1, '#675c59')
-            fillRectPerPixel(18, 19,  1,  1, '#675c59')
-
-        // SKIN
-            fillRectPerPixel( 8, 14,  4,  4, '#cbb099')
-            fillRectPerPixel(15, 14,  4,  4, '#cbb099')
-
-            fillRectPerPixel( 9, 16,  9,  3, '#cbb099')
-
-            fillRectPerPixel(12, 15,  1,  1, '#cbb099')
-
-            // SHADOW
-            fillRectPerPixel( 9, 13,  2,  1, '#8d745e')
-            fillRectPerPixel(16, 13,  2,  1, '#8d745e')
-
-        // LEFT EYE
-            fillRectPerPixel( 9, 14,  2,  1, 'black')
-            fillRectPerPixel( 9, 15,  2,  1, '#561b2f')
-            fillRectPerPixel( 9, 16,  2,  1, '#b34d4c')
-        // RIGHT EYE
-            fillRectPerPixel(16, 14,  2,  1, 'black')
-            fillRectPerPixel(16, 15,  2,  1, '#561b2f')
-            fillRectPerPixel(16, 16,  2,  1, '#b34d4c')
-
-        // mouth
-        fillRectPerPixel(12, 17,  3,  1, 'black')
-
-    </script>
-</body>
+        <script src="minified.js"></script>
+    </body>
 
 </html>

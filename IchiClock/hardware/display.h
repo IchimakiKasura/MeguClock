@@ -49,15 +49,15 @@ class DrawUI {
             _tft->fillRect(x+1, y+1, (40*percent)/100, 4, YELLOW);  // fill
         }
 
-        void _Logo(int x, int y, uint8_t scale) {
-            for (uint16_t i = 0; i < sizeof(rects)/sizeof(Rect); i++) {
-                Rect r;
-                memcpy_P(&r, &rects[i], sizeof r);
-                uint16_t color = pgm_read_word(&megumin_colors[r.colorId]);
-                _tft->fillRect(x+((r.x-14)+r.xOffs)*scale,y+(r.y-13)*scale,r.w*scale,r.h*scale,color);
-                _tft->fillRect(x+(r.x-14)*scale,y+((r.y-13)+r.yOffs)*scale,r.w*scale,r.h*scale,color);
-            }
-        }
+void _Logo(int x, int y, uint8_t scale) {
+    for (uint16_t i = 0; i < sizeof(rects)/sizeof(Rect); i++) {
+        Rect r;
+        memcpy_P(&r, &rects[i], sizeof r);
+        uint16_t color = pgm_read_word(&megumin_colors[r.colorId]);
+        _tft->fillRect(x+((r.x-14)+r.x_repeat)*scale,y+(r.y-13)*scale,r.w*scale,r.h*scale,color);
+        _tft->fillRect(x+(r.x-14)*scale,y+((r.y-13)+r.y_repeat)*scale,r.w*scale,r.h*scale,color);
+    }
+}
     public:
         bool blinkState = true;
         unsigned long lastBlink = 0;
@@ -123,7 +123,7 @@ class DrawUI {
         void Date(const DateTime &t = now) {
             _clearLine(DATE_Y, 22);
 
-            char Buf[9];
+            char Buf[10];
             bool hideMo  = _hideField(FIELD_MONTH);
             bool hideDay = _hideField(FIELD_DAY);
             bool hideYr  = _hideField(FIELD_YEAR);

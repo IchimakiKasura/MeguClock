@@ -1,130 +1,92 @@
-#include <EEPROM.h>
-#include <RTClib.h>
-#include <Adafruit_ST7735.h>
-#include "utils/rand.h"
-#include "config/ClockConfig.h"
-#include "config/ColorConfig.h"
-
-#define TFT_CS   10
-#define TFT_RST  8
-#define TFT_DC   9
-
-#define BTN_SELECT 2
-#define BTN_ADJUST 3
-#define BUZZER     5
-
-// ONLY SET TO TRUE IF NEEDS TO SYNC TO THE TIME
-#define SETUP_TIME false
-
-Adafruit_ST7735 tft(TFT_CS, TFT_DC, TFT_RST);
-RTC_DS3231 rtc;
-
-#include "hardware/display.h"
-#include "hardware/buzzer.h"
-#include "hardware/buttons.h"
-#include "hardware/rtc.h"
-#include "features/alarm.h"
-
-bool dones = false;
-
-void setup() {
-    initialize();
-    Draw.Header(0);
-    Draw.Bottom(strcpy_P(bottomTextBuffer, bottomMessages[rand(45)]));
-}
-
-void loop() {
-    updateJingle();
-
-    // RTC NOW HOT-SWAPPABLE? NANII??
-    isRTC = M_RTC::rtcConnected();
-    if (isRTC && !lastRTCState) {
-        Draw.ReDraw();
-    } else if (!isRTC && lastRTCState) {
-        DateTime zero(0,0,0,0,0,0);
-        Draw.ReDraw(zero);
-    } else if (isRTC) {
-        now = rtc.now();
-    }
-    lastRTCState = isRTC;
-
-    
-    adjustHeld = digitalRead(BTN_ADJUST) == LOW;
-
-    timeUpdate();
-    bottomTextUpdate();
-    borderUpdate();
-
-    if(millis() - lastCheck >= 20) {
-        lastCheck = millis();
-        handleBothButtons();
-    };
-
-    CheckAlarm(now.hour(), now.minute(), now.second());
-}
-
-void timeUpdate() {
-    if(editMode){
-        if(millis() - Draw.lastBlink >= 700){
-            Draw.lastBlink = millis();
-            Draw.blinkState = !Draw.blinkState;
-            if(now.hour() != M_RTC::h && selected != FIELD_HOUR && !h_edited) M_RTC::h = now.hour();
-            if(now.minute() != M_RTC::m && selected != FIELD_MIN && !m_edited) M_RTC::m = now.minute();
-            DateTime temp(M_RTC::y, M_RTC::mo, M_RTC::d, M_RTC::h, M_RTC::m, now.second());
-            Draw.ReDraw(temp);
-        }
-        return;
-    }
-    if (now.minute() != lastTime.minute() || now.hour() != lastTime.hour() || now.day() != lastTime.day()) {
-        Draw.ReDraw();
-        lastTime = now;
-        quickBeepStart();
-    }
-}
-void bottomTextUpdate() {
-    if(jingleState.playing) return;
-    if (millis() - lastBottomUpdate >= 10000) {
-        lastBottomUpdate = millis();
-        uint8_t newIndex;
-        do {
-            newIndex = rand(46);
-        } while (newIndex == lastBottomIndex && 46 > 1);
-        lastBottomIndex = newIndex;
-        bottomIndex = newIndex;
-        Draw.Bottom(strcpy_P(bottomTextBuffer, bottomMessages[rand(46)]));
-    }
-}
-void borderUpdate() {
-    if(millis() - borderLastUpdate >= 500) {
-        borderLastUpdate = millis();
-        Draw.CheckeredBorders();
-    }
-}
-void initialize() {             // goofy ahh init
-    tft.initR(INITR_GREENTAB);
-    tft.setRotation(0);
-    tft.fillScreen(0x18A8);
-
-    Draw.init(tft);
-
-    M_COLORS::Load();
-
-    Draw.SystemBoot();
-
-    Jingle(CHIISANA_BOKENSHA_JINGLE, true);
-    delay(100);
-    
-    Draw.FakeLoading();
-    
-    Wire.begin();
-    Wire.setWireTimeout(3000, true);
-    rtc.begin();
-
-    pinMode(BTN_SELECT, INPUT_PULLUP);
-    pinMode(BTN_ADJUST, INPUT_PULLUP);
-    pinMode(BUZZER, OUTPUT);
-
-    tft.fillScreen(0x18A8);
-
-    if(SETUP_TIME) rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
-}
+tft.fillRect(11, 0, 8, 1, 0x0000);
+tft.fillRect(10, 1, 10, 1, 0x0000);
+tft.fillRect(9, 2, 12, 1, 0x0000);
+tft.fillRect(8, 3, 14, 1, 0x0000);
+tft.fillRect(7, 4, 16, 1, 0x0000);
+tft.fillRect(7, 5, 18, 1, 0x0000);
+tft.fillRect(6, 6, 15, 14, 0x0000);
+tft.fillRect(5, 8, 17, 12, 0x0000);
+tft.fillRect(3, 11, 21, 2, 0x0000);
+tft.fillRect(2, 12, 23, 2, 0x0000);
+tft.fillRect(1, 13, 25, 1, 0x0000);
+tft.fillRect(0, 14, 3, 1, 0x0000);
+tft.fillRect(4, 11, 19, 6, 0x0000);
+tft.fillRect(24, 14, 3, 1, 0x0000);
+tft.fillRect(6, 20, 3, 2, 0x0000);
+tft.fillRect(18, 20, 3, 2, 0x0000);
+tft.fillRect(7, 22, 1, 1, 0x0000);
+tft.fillRect(19, 22, 1, 1, 0x0000);
+tft.fillRect(23, 6, 1, 1, 0x0000);
+tft.fillRect(25, 6, 1, 1, 0x0000);
+tft.fillRect(24, 7, 2, 1, 0x0000);
+tft.fillRect(11, 1, 5, 1, 0x7B2D);
+tft.fillRect(12, 2, 3, 1, 0x7B2D);
+tft.fillRect(13, 3, 1, 1, 0x7B2D);
+tft.fillRect(12, 4, 3, 1, 0x7B2D);
+tft.fillRect(8, 5, 2, 1, 0x7B2D);
+tft.fillRect(17, 5, 2, 1, 0x7B2D);
+tft.fillRect(8, 4, 1, 1, 0x7B2D);
+tft.fillRect(18, 4, 1, 1, 0x7B2D);
+tft.fillRect(7, 10, 3, 1, 0x7B2D);
+tft.fillRect(10, 9, 7, 1, 0x7B2D);
+tft.fillRect(17, 10, 3, 1, 0x7B2D);
+tft.fillRect(5, 11, 1, 1, 0x7B2D);
+tft.fillRect(21, 11, 1, 1, 0x7B2D);
+tft.fillRect(17, 1, 2, 1, 0x626A);
+tft.fillRect(18, 2, 2, 1, 0x626A);
+tft.fillRect(19, 3, 2, 1, 0x626A);
+tft.fillRect(20, 4, 2, 1, 0x626A);
+tft.fillRect(9, 3, 3, 1, 0x99A7);
+tft.fillRect(15, 3, 3, 1, 0x99A7);
+tft.fillRect(10, 2, 1, 3, 0x99A7);
+tft.fillRect(16, 2, 1, 3, 0x99A7);
+tft.fillRect(7, 7, 3, 2, 0x99A7);
+tft.fillRect(17, 7, 3, 2, 0x99A7);
+tft.fillRect(10, 6, 7, 2, 0x99A7);
+tft.fillRect(20, 8, 1, 2, 0x99A7);
+tft.fillRect(10, 3, 1, 1, 0xC48A);
+tft.fillRect(16, 3, 1, 1, 0xC48A);
+tft.fillRect(7, 7, 1, 1, 0xC48A);
+tft.fillRect(18, 7, 1, 1, 0xC48A);
+tft.fillRect(10, 6, 1, 1, 0xC48A);
+tft.fillRect(14, 6, 1, 1, 0xC48A);
+tft.fillRect(24, 6, 1, 1, 0xC48A);
+tft.fillRect(2, 13, 1, 1, 0xC48A);
+tft.fillRect(24, 13, 1, 1, 0xC48A);
+tft.fillRect(6, 8, 1, 2, 0xC48A);
+tft.fillRect(9, 7, 3, 1, 0xC48A);
+tft.fillRect(13, 7, 3, 1, 0xC48A);
+tft.fillRect(17, 8, 3, 1, 0xC48A);
+tft.fillRect(3, 12, 3, 1, 0xC48A);
+tft.fillRect(21, 12, 3, 1, 0xC48A);
+tft.fillRect(6, 11, 4, 1, 0xC48A);
+tft.fillRect(17, 11, 4, 1, 0xC48A);
+tft.fillRect(10, 10, 7, 1, 0xC48A);
+tft.fillRect(5, 14, 2, 3, 0x9430);
+tft.fillRect(20, 14, 2, 3, 0x9430);
+tft.fillRect(6, 17, 1, 3, 0x9430);
+tft.fillRect(20, 17, 1, 3, 0x9430);
+tft.fillRect(7, 20, 1, 2, 0x9430);
+tft.fillRect(19, 20, 1, 2, 0x9430);
+tft.fillRect(12, 13, 3, 1, 0x9430);
+tft.fillRect(13, 14, 1, 1, 0x9430);
+tft.fillRect(12, 12, 3, 1, 0x62EB);
+tft.fillRect(6, 13, 2, 1, 0x62EB);
+tft.fillRect(19, 13, 2, 1, 0x62EB);
+tft.fillRect(5, 14, 1, 1, 0x62EB);
+tft.fillRect(21, 14, 1, 1, 0x62EB);
+tft.fillRect(8, 19, 1, 1, 0x62EB);
+tft.fillRect(18, 19, 1, 1, 0x62EB);
+tft.fillRect(8, 14, 4, 4, 0xCD93);
+tft.fillRect(15, 14, 4, 4, 0xCD93);
+tft.fillRect(9, 16, 9, 3, 0xCD93);
+tft.fillRect(12, 15, 1, 1, 0xCD93);
+tft.fillRect(9, 13, 2, 1, 0x8BAB);
+tft.fillRect(16, 13, 2, 1, 0x8BAB);
+tft.fillRect(9, 14, 2, 1, 0x0000);
+tft.fillRect(9, 15, 2, 1, 0x50C5);
+tft.fillRect(9, 16, 2, 1, 0xB269);
+tft.fillRect(16, 14, 2, 1, 0x0000);
+tft.fillRect(16, 15, 2, 1, 0x50C5);
+tft.fillRect(16, 16, 2, 1, 0xB269);
+tft.fillRect(12, 17, 3, 1, 0x0000);
