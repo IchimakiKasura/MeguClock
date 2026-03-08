@@ -1,5 +1,7 @@
 # Its my goofy built digital clock with funi features.
 
+![](gui-1.jpg)
+
 Features:
 - Fake loading because god knows its just a simple mcu.
 - Customizable uh upper header idfk.
