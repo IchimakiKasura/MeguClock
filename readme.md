@@ -1,15 +1,25 @@
-# Its my goofy built digital clock with funi features.
+# MEGU-CLOCK
+*Its my goofy built digital clock with funi features.*
 
 ![](gui.jpg)
 
 Features:
 - Fake loading because god knows its just a simple mcu.
-- Customizable uh upper header idfk.
+- Customizable uh colors
 - clock can be adjusted using 2 buttons
 - added shitty buzzer to uh for alarm idfk.
-- has random ahh messages every 10 seconds at the bottom.
+- alarms are preloaded/hardcoded? idfk lmao
+    - 6:00 AM `FNAF`
+    - 10:00 AM `Samsung Morning Flower`
+    - 12:00 PM `Winchester Chime`
+    - 3:00 PM `Winchester Chime`
+    - 10:00 PM `Short ahh Twinkle star smh`
+- has random ahh messages every 10 seconds at the bottom. *(can be customized through code ofc)*
 - has an epic border.
 
+<br>
+<hr>
+<br>
 
 requirements?
 - Arduino Uno/Nano (planning to upgrade to esp32 for faster shit? no more memory for goofy pictures)
