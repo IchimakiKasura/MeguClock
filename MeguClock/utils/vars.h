@@ -1,5 +1,6 @@
 #pragma once
 #include <RTClib.h>
+#include "rand.h"
 
 enum Field { FIELD_HOUR, FIELD_MIN, FIELD_AMPM, FIELD_MONTH, FIELD_DAY, FIELD_YEAR };
 Field selected = FIELD_HOUR;
@@ -84,3 +85,9 @@ const char bottomMessages[][20] PROGMEM = {
   "Works on my PC",
   "Hardware issue"
 };
+
+#include "../config/ClockConfig.h"
+#include "../hardware/display.h"
+#include "../hardware/buzzer.h"
+#include "../hardware/buttons.h"
+#include "../features/alarm.h"

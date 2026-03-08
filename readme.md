@@ -1,9 +1,13 @@
+<center>
+
 # MEGU-CLOCK
 *Its my goofy built digital clock with funi features.*
 
-![](gui.jpg)
+<img src="gui.jpg" height="450"/>
 
-Features:
+## Features:
+</center>
+
 - Fake loading because god knows its just a simple mcu.
 - Customizable uh colors
 - clock can be adjusted using 2 buttons
@@ -20,8 +24,11 @@ Features:
 <br>
 <hr>
 <br>
+<center>
 
-requirements?
+## requirements?
+</center>
+
 - Arduino Uno/Nano (planning to upgrade to esp32 for faster shit? no more memory for goofy pictures)
 - 2 Push Buttons
 - Passive Buzzer
@@ -30,3 +37,9 @@ requirements?
 
 wirings:
 - nah you read the sht and fcken guess it by urself.
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>

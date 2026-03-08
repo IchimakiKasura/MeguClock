@@ -14,7 +14,7 @@ private:
          _dateDrawnErr = false;
 
     void _cacheClockBounds();
-    bool _hideField(const Field &f);
+    inline bool _hideField(const Field &f);
     void _clearLine(const int16_t &y, const int16_t &h);
     template<typename args>
     void _CenteredText(const args t,const int16_t &y,const int16_t &s,const uint16_t &c);
@@ -40,7 +40,7 @@ public:
     }
 } Draw;
 
-inline void DrawUI::_cacheClockBounds() {
+void DrawUI::_cacheClockBounds() {
     if (_clockBoundsCached) return;
 
     uint16_t _clockW, _clockH;
@@ -56,12 +56,12 @@ inline bool DrawUI::_hideField(const Field &f) {
     return editMode && selected==f && !adjustHeld && !blinkState;
 }
 
-inline void DrawUI::_clearLine(const int16_t &y, const int16_t &h) {
+void DrawUI::_clearLine(const int16_t &y, const int16_t &h) {
     _tft->fillRect(3, y, _screenWidth - 8, h, 0x40A3);
 }
 
 template<typename args>
-inline void DrawUI::_CenteredText(const args t,const int16_t &y,const int16_t &s,const uint16_t &c) {
+void DrawUI::_CenteredText(const args t,const int16_t &y,const int16_t &s,const uint16_t &c) {
     int16_t x1, y1;
     uint16_t w, h;
 
@@ -72,7 +72,7 @@ inline void DrawUI::_CenteredText(const args t,const int16_t &y,const int16_t &s
     _tft->print(t);
 }
 
-inline void DrawUI::_ProgressBar(int percent) {
+void DrawUI::_ProgressBar(int percent) {
     byte x = 40, y = 145;
 
     _tft->drawFastHLine(x, y, 42, WHITE);
@@ -82,7 +82,7 @@ inline void DrawUI::_ProgressBar(int percent) {
     _tft->fillRect(x+1, y+1, (40*percent)/100, 4, YELLOW);
 }
 
-inline void DrawUI::_Logo(int x, int y, uint8_t scale) {
+void DrawUI::_Logo(int x, int y, uint8_t scale) {
     for (uint16_t i = 0; i < sizeof(rects)/sizeof(Rect); i++) {
         Rect r;
 
@@ -95,7 +95,7 @@ inline void DrawUI::_Logo(int x, int y, uint8_t scale) {
     }
 }
 
-inline void DrawUI::init(uint8_t cs, uint8_t dc, uint8_t rst) {
+void DrawUI::init(uint8_t cs, uint8_t dc, uint8_t rst) {
     _tft = new Adafruit_ST7735(cs, dc, rst);
     _tft->initR();
     _tft->fillScreen(0x40A3);
@@ -103,7 +103,7 @@ inline void DrawUI::init(uint8_t cs, uint8_t dc, uint8_t rst) {
     _screenHeight = _tft->height();
 }
 
-inline void DrawUI::Header(byte t) {
+void DrawUI::Header(byte t) {
     static bool _l = false;
     _clearLine(HEADER_Y-8, 20);
 
@@ -118,7 +118,7 @@ inline void DrawUI::Header(byte t) {
     _Logo(19,22,1); _Logo(109,22,1);
 }
 
-inline void DrawUI::Time(const DateTime &t = now) {
+void DrawUI::Time(const DateTime &t = now) {
     _clearLine(CLOCK_Y, 30);
 
     char Buf[3];
@@ -153,7 +153,7 @@ inline void DrawUI::Time(const DateTime &t = now) {
     // _Logo(64,80,3);
 }
 
-inline void DrawUI::Date(const DateTime &t = now) {
+void DrawUI::Date(const DateTime &t = now) {
     _clearLine(DATE_Y, 22);
 
     char Buf[10];
@@ -182,17 +182,17 @@ inline void DrawUI::Date(const DateTime &t = now) {
     }
 }
 
-inline void DrawUI::Bottom(const char* t) {
+void DrawUI::Bottom(const char* t) {
     _clearLine(BOTTOM_Y, 12);
     _CenteredText(t, BOTTOM_Y, BOTTOM_SIZE, GREEN);
 }
 
-inline void DrawUI::SystemBoot() {
+void DrawUI::SystemBoot() {
     _CenteredText(F("MEGU-CLOCK"), 90, 2, WHITE);
     _Logo(64,55,3);
 }
 
-inline void DrawUI::FakeLoading() {
+void DrawUI::FakeLoading() {
     const uint8_t barSteps[] = {0, 25, 50, 55, 60, 65, 85, 100};
     const uint16_t delays[] = {250, 250, 250, 150, 150, 150, 250, 500};
 
@@ -204,7 +204,7 @@ inline void DrawUI::FakeLoading() {
     }
 }
 
-inline void DrawUI::CheckeredBorders(uint16_t fillColor = 0, uint16_t dashColor = 0) {
+void DrawUI::CheckeredBorders(uint16_t fillColor = 0, uint16_t dashColor = 0) {
     uint16_t hY[] = {1, 38, 128, 158};
     static bool swapColors = false;
 
@@ -234,7 +234,7 @@ inline void DrawUI::CheckeredBorders(uint16_t fillColor = 0, uint16_t dashColor 
     }
 }
 
-inline void DrawUI::TextColorChange(bool saveColor = false) {
+void DrawUI::TextColorChange(bool saveColor = false) {
     M_COLORS::ClockColor_index = (M_COLORS::ClockColor_index + 1) % 8;
     M_COLORS::DateColor_index = (M_COLORS::ClockColor_index + 1 + rand(7)) % 8;
 
@@ -250,7 +250,7 @@ inline void DrawUI::TextColorChange(bool saveColor = false) {
     if (saveColor) M_COLORS::Save();
 }
 
-inline void DrawUI::ReDraw(const DateTime &t = now) {
+void DrawUI::ReDraw(const DateTime &t = now) {
     Time(t);
     Date(t);
 }

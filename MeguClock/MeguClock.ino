@@ -1,10 +1,4 @@
-#include "utils/rand.h"
 #include "utils/vars.h"
-#include "config/ClockConfig.h"
-#include "hardware/display.h"
-#include "hardware/buzzer.h"
-#include "hardware/buttons.h"
-#include "features/alarm.h"
 
 void setup() {
   initialize();
