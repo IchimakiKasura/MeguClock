@@ -15,13 +15,11 @@ DateTime now, lastTime;
 uint8_t bottomIndex = 0;
 static uint8_t lastBottomIndex = -1;
 
-unsigned long systemTime,
-              lastBottomUpdate = 0,
-              borderLastUpdate = 0,
-              lastUpdate = 0,
-              lastCheck = 0;
-
-const char bottomTextBuffer[20];
+uint32_t systemTime,
+         lastBottomUpdate = 0,
+         borderLastUpdate = 0,
+         lastUpdate = 0,
+         lastCheck = 0;
 
 const char monthNames[][5] PROGMEM = {
   "JAN ","FEB ","MAR ","APR ","MAY ","JUN ",
@@ -38,6 +36,7 @@ const char daysFull[][10] PROGMEM = {
   "Saturday"
 };
 
+const char bottomTextBuffer[20];
 const char bottomMessages[][20] PROGMEM = {
   "Compiling reality",
   "Explosion magic!",  

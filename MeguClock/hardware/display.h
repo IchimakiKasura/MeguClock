@@ -23,7 +23,7 @@ private:
 
 public:
     bool blinkState = true;
-    unsigned long lastBlink = 0;
+    uint32_t lastBlink = 0;
     DrawUI() = default;
     void init(uint8_t cs, uint8_t dc, uint8_t rst);
     void Header(byte t);
@@ -55,7 +55,7 @@ inline bool DrawUI::_hideField(const Field &f) {
 }
 
 void DrawUI::_clearLine(const int16_t &y, const int16_t &h) {
-    _tft->fillRect(3, y, _screenWidth - 8, h, 0x40A3);
+    _tft->fillRect(3, y, _screenWidth - 6, h, 0x40A3);
 }
 
 template<typename args>

@@ -5,7 +5,7 @@ int main() {
     initialize();
 
     Draw.Header(0);
-    Draw.Bottom(strcpy_P(bottomTextBuffer, bottomMessages[rand(45)]));
+    Draw.Bottom(strcpy_P(bottomTextBuffer, bottomMessages[rand(4)]));
 
     while(true) {
         systemTime = millis();
@@ -28,14 +28,13 @@ int main() {
 
             timeUpdate();
 
-            updateFunction(handleBothButtons, lastCheck, 20);
+            updateFunction(handleBothButtons, lastCheck, 15);
 
             CheckAlarm(now.hour(), now.minute(), now.second());
         }
 
-        if (mRTC.isRTC && !lastRTCState) {
+        if (mRTC.isRTC && !lastRTCState) 
             Draw.ReDraw();
-        }
         else if (!mRTC.isRTC && lastRTCState) {
             DateTime zero(0,0,0,0,0,0);
             Draw.ReDraw(zero);
@@ -98,7 +97,6 @@ void initialize() {
     M_COLORS::Load();
     Draw.SystemBoot();
 
-
     Jingle(CHIISANA_BOKENSHA_JINGLE, true);
     delay(100);
 
@@ -122,7 +120,8 @@ void initialize() {
     // mRTC.sync();
 }
 
-inline void updateFunction(void (*func)(), unsigned long &ms, int16_t t) {
+// non-blocking boilerplate idfk
+inline void updateFunction(void (*func)(), uint32_t &ms, int16_t t) {
     if (systemTime - ms < t) return;
     func();
     ms = systemTime;

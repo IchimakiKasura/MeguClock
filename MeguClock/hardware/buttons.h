@@ -1,13 +1,13 @@
 #pragma once
 #include "rtc.h"
 
-unsigned long selectPressStart = 0,
-              adjustPressTime  = 0,
-              adjustHoldStart  = 0;
-bool          adjustWaitingSecondTap = false,
-              selectIgnoreRelease = false;
-unsigned long lastSelect = 0,
-              lastAdjust = 0;
+uint32_t selectPressStart = 0,
+         adjustPressTime  = 0,
+         adjustHoldStart  = 0;
+bool     adjustWaitingSecondTap = false,
+         selectIgnoreRelease = false;
+uint32_t lastSelect = 0,
+         lastAdjust = 0;
 
 void handleSelectButton() {
     #ifndef CUSTOM_PINS
@@ -93,7 +93,7 @@ void applyAdjustment(int dir) {
 
 void handleAdjustButton() {
     static bool lastState = HIGH;
-    static unsigned long lastRepeat = 0;
+    static uint32_t lastRepeat = 0;
     
     #ifndef CUSTOM_PINS
         bool state = (PIND & (1 << 3));

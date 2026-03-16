@@ -32,15 +32,12 @@ private:
     void startWrite();
     void endWrite();
     void setAddrWindow(uint16_t, uint16_t, uint16_t, uint16_t);
-    void SPI_DC_HIGH() { PORTB |= (1 << _dc); }
-    void SPI_DC_LOW() { PORTB &= ~(1 << _dc); }
     void writeAVRSPI(uint8_t);
 public:
     MeguClock_ST7735(int8_t, int8_t, int8_t);
     ~MeguClock_ST7735() {};
     void initR();
     void drawPixel(int16_t, int16_t, uint16_t);
-    void writeLine(int16_t, int16_t, int16_t, int16_t, uint16_t);
     void drawFastVLine(int16_t, int16_t, int16_t, uint16_t);
     void drawFastHLine(int16_t, int16_t, int16_t, uint16_t);
     void fillRect(int16_t, int16_t, int16_t, int16_t, uint16_t);

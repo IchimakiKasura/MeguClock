@@ -1,7 +1,7 @@
 #pragma once
 #include "../config/ColorConfig.h"
 
-extern inline void updateFunction(void (*func)(), unsigned long &ms, int16_t t);
+extern inline void updateFunction(void (*func)(), uint32_t &ms, int16_t t);
 
 const uint16_t melody[5][43] PROGMEM = {
     // 0 - Konosuba ED
@@ -54,7 +54,7 @@ struct JingleState {
     uint8_t index  = 0;
     uint8_t delays = 0;
 
-    unsigned long nextTime = 0;
+    uint32_t nextTime = 0;
 
     bool playing = false;
     bool borders = false;
@@ -112,9 +112,9 @@ void Jingle(uint8_t jingleNumber,
 
 void updateJingle() {
 
-    static bool playing = false;
-    static unsigned long end        = 0;
-    static unsigned long lastBorder = 0;
+    static bool playing        = false;
+    static uint32_t end        = 0;
+    static uint32_t lastBorder = 0;
 
     if (!jingleState.playing) return;
 
