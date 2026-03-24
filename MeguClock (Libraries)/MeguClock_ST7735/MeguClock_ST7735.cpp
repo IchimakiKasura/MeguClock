@@ -104,6 +104,12 @@ static const uint8_t PROGMEM
       100
 };
 
+/*!
+    @brief Instantiate MeguClock ST7735 driver with software SPI
+    @param cs Chip select pin #
+    @param dc Data/Command pin #
+    @param rst reset pin #
+*/
 MeguClock_ST7735::MeguClock_ST7735(int8_t cs, int8_t dc, int8_t rst) : _rst(rst), _cs(cs), _dc(dc)  {
     hwspi._spi = &SPI;
     _width = TFT_WIDTH;
@@ -112,7 +118,10 @@ MeguClock_ST7735::MeguClock_ST7735(int8_t cs, int8_t dc, int8_t rst) : _rst(rst)
     textsize = 1;
     textcolor = textbgcolor = 0xFFFF;
 }
-void MeguClock_ST7735::initR() {
+/*!
+    @brief  Initialization code
+*/
+void MeguClock_ST7735::init() {
     DDRB = (1 << _rst)|(1 << _dc)|(1 << _cs);
     PORTB |= (1 << _rst)|(1 << _dc)|(1 << _cs);
     hwspi.settings = SPISettings(16000000, MSBFIRST, SPI_MODE0);
@@ -122,6 +131,11 @@ void MeguClock_ST7735::initR() {
     displayInit(Rcmd2green);
     displayInit(Rcmd3);
 }
+/*!
+    @brief  Companion code to the initiliazation tables. Reads and issues
+            a series of LCD commands stored in PROGMEM byte array.
+    @param  addr  Flash memory array with commands and data to send
+*/
 void MeguClock_ST7735::displayInit(const uint8_t *addr) {
   uint8_t numCommands, numArgs;
   uint16_t ms;
@@ -138,6 +152,13 @@ void MeguClock_ST7735::displayInit(const uint8_t *addr) {
     }
   }
 }
+/*!
+  @brief  SPI displays set an address window rectangle for blitting pixels
+  @param  x  Top left corner x coordinate
+  @param  y  Top left corner y coordinate
+  @param  w  Width of window
+  @param  h  Height of window
+*/
 void MeguClock_ST7735::setAddrWindow(uint16_t x, uint16_t y, uint16_t w, uint16_t h) {
     x += 2; y += 1;
     startWrite();
@@ -149,12 +170,26 @@ void MeguClock_ST7735::setAddrWindow(uint16_t x, uint16_t y, uint16_t w, uint16_
     AVR_WRITESPI((y + h - 1) >> 8); AVR_WRITESPI((y + h - 1) & 0xFF);
     writeAVRSPI(0x2C);
 }
+/*!
+  @brief  Draw a pixel to the canvas framebuffer
+  @param  x  Top left corner x coordinate
+  @param  y  Top left corner y coordinate
+  @param  color 16-bit 5-6-5 Color to fill with
+*/
 void MeguClock_ST7735::drawPixel(int16_t x, int16_t y, uint16_t color) {
   if(x<0 ||x>=_width || y<0 || y>=_height) return;
   setAddrWindow(x, y, 1, 1);
   writeColor(color, 1);
   endWrite();
 }
+/*!
+  @brief  Fill a rectangle completely with one color.
+  @param  x  Top left corner x coordinate
+  @param  y  Top left corner y coordinate
+  @param  w  Width of window
+  @param  h  Height of window
+  @param  color 16-bit 5-6-5 Color to fill with
+*/
 void MeguClock_ST7735::fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color) {
   if(x>=_width || y>=_height || w<=0 || h<=0) return;
   if(x+w-1>=_width)  w=_width -x;
@@ -163,11 +198,24 @@ if(y+h-1>=_height) h=_height-y;
   writeColor(color, (uint32_t)w * h);
   endWrite();
 }
+/*!
+    @brief  Fill the framebuffer completely with one color
+    @param  color Binary (on or off) color to fill with
+*/
 void MeguClock_ST7735::fillScreen(uint16_t color) {
   setAddrWindow(0, 0, _width, _height);
   writeColor(color, _width * _height);
   endWrite();
 }
+/*!
+   @brief   Draw a single character
+    @param    x   Bottom left corner x coordinate
+    @param    y   Bottom left corner y coordinate
+    @param    c   The 8-bit font-indexed character (likely ascii)
+    @param    color 16-bit 5-6-5 Color to draw chraracter with
+    @param    bg 16-bit 5-6-5 Color to fill background with (if same as color, no background)
+    @param    size_tx  Font magnification level, 1 is 'original' size
+*/
 void MeguClock_ST7735::drawChar(int16_t x, int16_t y, unsigned char c, uint16_t color, uint16_t bg, uint8_t size_tx) {
   if ((x >= _width) || (y >= _height) || ((x + 6 * size_tx - 1) < 0) || ((y + 8 * size_tx - 1) < 0)) return;
   if ((c >= 176)) c++;
@@ -192,6 +240,10 @@ void MeguClock_ST7735::drawChar(int16_t x, int16_t y, unsigned char c, uint16_t 
       fillRect(x + 5 * size_tx, y, size_tx, 8 * size_tx, bg);
   }
 }
+/*!
+    @brief  Print one byte/character of data, used to support print()
+    @param  c  The 8-bit ascii character to write
+*/
 size_t MeguClock_ST7735::write(uint8_t c) {
   if (c == '\n') {              
     cursor_x = 0;               
@@ -206,6 +258,17 @@ size_t MeguClock_ST7735::write(uint8_t c) {
   }
   return 1;
 }
+/*!
+    @brief  Helper to determine size of a string with current font/size.
+            Pass string and a cursor position, returns UL corner and W,H.
+    @param  str  The ASCII string to measure
+    @param  x    The current cursor X
+    @param  y    The current cursor Y
+    @param  x1   The boundary X coordinate, returned by function
+    @param  y1   The boundary Y coordinate, returned by function
+    @param  w    The boundary width, returned by function
+    @param  h    The boundary height, returned by function
+*/
 void MeguClock_ST7735::getTextBounds(const char *str, int16_t x, int16_t y, int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h) {
     uint8_t c;
     int16_t minx = 0x7FFF, miny = 0x7FFF, maxx = -1, maxy = -1;
@@ -215,6 +278,17 @@ void MeguClock_ST7735::getTextBounds(const char *str, int16_t x, int16_t y, int1
     if(maxy >= miny) *h = maxy - miny + 1;
     *x1 = minx; *y1 = miny;
 }
+/*!
+    @brief    Helper to determine size of a PROGMEM string with current
+   font/size. Pass string and a cursor position, returns UL corner and W,H.
+    @param    str     The flash-memory ascii string to measure
+    @param    x       The current cursor X
+    @param    y       The current cursor Y
+    @param    x1      The boundary X coordinate, set by function
+    @param    y1      The boundary Y coordinate, set by function
+    @param    w      The boundary width, set by function
+    @param    h      The boundary height, set by function
+*/
 void MeguClock_ST7735::getTextBounds(const __FlashStringHelper *str, int16_t x, int16_t y, int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h) {
     uint8_t *s = (uint8_t *)str, c;
     int16_t minx = 0x7FFF, miny = 0x7FFF, maxx = -1, maxy = -1;
@@ -224,6 +298,22 @@ void MeguClock_ST7735::getTextBounds(const __FlashStringHelper *str, int16_t x, 
     if(maxy >= miny) *h = maxy - miny + 1;
     *x1 = minx; *y1 = miny;
 }
+/*!
+    @brief  Helper to determine size of a character with current font/size.
+            Broke this out as it's used by both the PROGMEM- and RAM-resident
+            getTextBounds() functions.
+    @param  c     The ASCII character in question
+    @param  x     Pointer to x location of character. Value is modified by
+                  this function to advance to next character.
+    @param  y     Pointer to y location of character. Value is modified by
+                  this function to advance to next character.
+    @param  minx  Pointer to minimum X coordinate, passed in to AND returned
+                  by this function -- this is used to incrementally build a
+                  bounding rectangle for a string.
+    @param  miny  Pointer to minimum Y coord, passed in AND returned.
+    @param  maxx  Pointer to maximum X coord, passed in AND returned.
+    @param  maxy  Pointer to maximum Y coord, passed in AND returned.
+*/
 void MeguClock_ST7735::charBounds(unsigned char c, int16_t *x, int16_t *y, int16_t *minx, int16_t *miny, int16_t *maxx, int16_t *maxy) {
   if(c == '\n') { *x = 0; *y += textsize * 8; }
     else if(c != '\r') {
@@ -240,19 +330,31 @@ void MeguClock_ST7735::charBounds(unsigned char c, int16_t *x, int16_t *y, int16
       *x += textsize * 6;
   }
 }
+/*!
+   @brief Start a display-writing routine.
+*/
 void MeguClock_ST7735::startWrite() {
   hwspi._spi->beginTransaction(hwspi.settings);
   PORTB &= ~(1 << _cs);
 }
+/*!
+   @brief Ends a display-writing routine.
+*/
 void MeguClock_ST7735::endWrite() {
   PORTB &= ~(1 << _cs);
   hwspi._spi->endTransaction();
 }
+/*!
+   @brief Writes to AVR's SPI connection.
+*/
 void MeguClock_ST7735::writeAVRSPI(uint8_t addr) {
   PORTB &= ~(1 << _dc);
   AVR_WRITESPI(addr);
   PORTB |= (1 << _dc);
 }
+/*!
+   @brief Color, just color.
+*/
 inline void MeguClock_ST7735::writeColor(uint16_t color, uint32_t len) {
     uint8_t hi = color >> 8, lo = color & 0xFF;
     while (len--) {

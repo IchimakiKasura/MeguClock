@@ -1,10 +1,10 @@
 #pragma once
 #include <MeguClock_ST7735.h>
-#include "rtc.h"
+#include <MeguClock_DS3231.h>
 #include "../assets/meguminLogo.h"
 #include "../config/ColorConfig.h"
 
-class DrawUI : private M_RTC {
+class DrawUI {
 private:
     MeguClock_ST7735* _tft;
     int16_t _clockX;
@@ -13,11 +13,11 @@ private:
          _dateDrawnErr = false;
 
     void _cacheClockBounds();
-    inline bool _hideField(const Field &f);
-    inline void _clearLine(const int16_t &y, const int16_t &h);
+    inline bool _hideField(const Field&);
+    inline void _clearLine(const int16_t&, const int16_t&);
     template<typename args>
-    void _CenteredText(const args t,const int16_t &y,const int16_t &s,const uint16_t &c);
-    void _Logo(int x, int y, uint8_t scale);
+    void _CenteredText(const args,const int16_t&,const int16_t&,const uint16_t&);
+    void _Logo(int, int, uint8_t);
 
 public:
     bool blinkState = true;
@@ -27,11 +27,11 @@ public:
     void Header(byte t);
     void Time(const DateTime&);
     void Date(const DateTime&);
-    void Bottom(const char* t);
+    void Bottom(const char*);
     void SystemBoot();
     void FakeLoading();
-    void CheckeredBorders(uint16_t, uint16_t );
-    void TextColorChange(bool saveColor);
+    void CheckeredBorders(uint16_t, uint16_t);
+    void TextColorChange(bool);
     void ReDraw(const DateTime&);
     void bg() { _tft->fillScreen(0x40A3); }
 } Draw;
@@ -95,7 +95,7 @@ void DrawUI::_Logo(int x, int y, uint8_t scale) {
 
 void DrawUI::init(uint8_t cs, uint8_t dc, uint8_t rst) {
     _tft = new MeguClock_ST7735(cs, dc, rst);
-    _tft->initR();
+    _tft->init();
     _tft->fillScreen(0x40A3);
 }
 
@@ -114,29 +114,26 @@ void DrawUI::Header(byte t) {
     _Logo(19,22,1); _Logo(109,22,1);
 }
 
-void DrawUI::Time(const DateTime &t = g_now) {
+void DrawUI::Time(const DateTime &t) {
     _clearLine(50, 30);
 
     char Buf[3];
-    uint8_t h12 = getCurrentHour(t);
-    const char* ampm = mRTC.isRTC ? _hideField(FIELD_AMPM) ? "--" : getCurrentMidday(t) : "??";
-
-    if (!h12) h12 = 12;
+    const char* ampm = rtc.isRTC ? _hideField(FIELD_AMPM) ? "--" : t.midday() : "??";
     
     _tft->setTextSize(CLOCK_SIZE);
     _cacheClockBounds();
     _tft->setCursor(_clockX, 50);
 
-    if(mRTC.isRTC)
+    if(rtc.isRTC)
     {
-        if (!_hideField(FIELD_HOUR)) sprintf(Buf, "%02d", h12);
+        sprintf(Buf, "%02d", t.twelveHour());
         _tft->setTextColor(_hideField(FIELD_HOUR) ? RED : M_COLORS::ClockColor());
         _tft->print(_hideField(FIELD_HOUR) ? "--" : Buf);
 
         _tft->setTextColor(WHITE);
         _tft->print(":");
         
-        if (!_hideField(FIELD_MIN))  sprintf(Buf, "%02d", t.minute());
+        sprintf(Buf, "%02d", t.minute());
         _tft->setTextColor(_hideField(FIELD_MIN) ? RED : M_COLORS::ClockColor());
         _tft->print(_hideField(FIELD_MIN) ? "--" : Buf);
 
@@ -147,7 +144,7 @@ void DrawUI::Time(const DateTime &t = g_now) {
     // _Logo(64,80,3);
 }
 
-void DrawUI::Date(const DateTime &t = g_now) {
+void DrawUI::Date(const DateTime &t) {
     _clearLine(105, 22);
 
     char Buf[10];
@@ -160,9 +157,10 @@ void DrawUI::Date(const DateTime &t = g_now) {
     _tft->setTextColor(c);
     _tft->setCursor(30, 105);
 
-    if(mRTC.isRTC)
+    if(rtc.isRTC)
     {
-        _tft->print(hideMo ? "--- " : getCurrentMonth(t));
+        sprintf(Buf, "%04s", t.monthName());
+        _tft->print(hideMo ? "--- " : Buf);
 
         if (!hideDay) sprintf(Buf, "%02d, ", t.day());
         _tft->print(hideDay ? "--, " : Buf);
@@ -170,7 +168,8 @@ void DrawUI::Date(const DateTime &t = g_now) {
         if (!hideYr) sprintf(Buf, "%04d", t.year());
         _tft->print(hideYr ? "----" : Buf);
 
-        _CenteredText(strcpy_P(Buf, daysFull[t.dayOfTheWeek()]), 105 + 10, DATE_SIZE, c);
+        sprintf(Buf, "%s", t.dayOfTheWeekName());
+        _CenteredText(Buf, 105 + 10, DATE_SIZE, c);
     } else _tft->print(F("  RtcError"));
 }
 
@@ -229,7 +228,7 @@ void DrawUI::CheckeredBorders(uint16_t fillColor = 0, uint16_t dashColor = 0) {
     }
 }
 
-void DrawUI::ReDraw(const DateTime &t = g_now) {
+void DrawUI::ReDraw(const DateTime &t = rtc.s_now) {
     Time(t);
     Date(t);
 }

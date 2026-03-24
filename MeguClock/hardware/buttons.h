@@ -1,5 +1,4 @@
 #pragma once
-#include "rtc.h"
 
 uint32_t selectPressStart = 0,
          adjustPressTime  = 0,
@@ -28,7 +27,9 @@ void handleSelectButton() {
         longHandled =
         selectIgnoreRelease = true;
         if (editMode) {
-            mRTC.Save();
+            rtc.Save();
+            editMode = false;
+            selected = FIELD_HOUR;
             Draw.Header(0);
             Draw.ReDraw();
         }
@@ -42,7 +43,9 @@ void handleSelectButton() {
             if (editMode) {
                 Draw.blinkState = !(Draw.lastBlink = 0);
                 if (selected == FIELD_YEAR) {
-                    mRTC.Save();
+                    rtc.Save();
+                    editMode = false;
+                    selected = FIELD_HOUR;
                     Draw.Header(0);
                     Draw.ReDraw();
                 } else {
@@ -51,7 +54,7 @@ void handleSelectButton() {
                 }
             } 
             else {
-                mRTC.Load();
+                rtc.Load();
                 Draw.Header(1);
                 Draw.blinkState = editMode = true;
                 quickBeepStart();
@@ -64,28 +67,28 @@ void handleSelectButton() {
 void applyAdjustment(int dir) {
     int dim;
     switch (selected) {
-        case FIELD_HOUR:  mRTC.h = (mRTC.h + dir + 24) % 24; h_edited = true; break;
-        case FIELD_MIN:   mRTC.m = (mRTC.m + dir + 60) % 60; m_edited = true; break;
-        case FIELD_AMPM:  mRTC.h = (mRTC.h + 12) % 24; break;
+        case FIELD_HOUR:  rtc.h = (rtc.h + dir + 24) % 24; h_edited = true; break;
+        case FIELD_MIN:   rtc.m = (rtc.m + dir + 60) % 60; m_edited = true; break;
+        case FIELD_AMPM:  rtc.h = (rtc.h + 12) % 24; break;
         case FIELD_MONTH:
-            mRTC.mo = (mRTC.mo + dir - 1 + 12) % 12 + 1;
-            dim = mRTC.getDay();
-            if (mRTC.d > dim)
-                mRTC.d = dim;
+            rtc.mo = (rtc.mo + dir - 1 + 12) % 12 + 1;
+            dim = rtc.now().month();
+            if (rtc.d > dim)
+                rtc.d = dim;
             break;
         case FIELD_DAY:
-            dim = mRTC.getDay();
-            mRTC.d += dir;
-            if (mRTC.d < 1)
-                mRTC.d = dim;
-            else if (mRTC.d > dim)
-                mRTC.d = 1;
+            dim = rtc.now().day();
+            rtc.d += dir;
+            if (rtc.d < 1)
+                rtc.d = dim;
+            else if (rtc.d > dim)
+                rtc.d = 1;
             break;
         case FIELD_YEAR:
-            mRTC.y += dir;
-            dim = mRTC.getDay();
-            if (mRTC.d > dim)
-                mRTC.d = dim;
+            rtc.y += dir;
+            dim = rtc.now().year();
+            if (rtc.d > dim)
+                rtc.d = dim;
             break;
     }
     quickBeepStart();

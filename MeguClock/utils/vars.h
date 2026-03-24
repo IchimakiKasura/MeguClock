@@ -1,5 +1,5 @@
 #pragma once
-#include <RTClib.h>
+#include <MeguClock_DS3231.h>
 #include "rand.h"
 
 enum Field { FIELD_HOUR, FIELD_MIN, FIELD_AMPM, FIELD_MONTH, FIELD_DAY, FIELD_YEAR };
@@ -11,7 +11,9 @@ bool editMode = false,
      m_edited = false,
      lastRTCState = false;
 
-DateTime g_now, lastTime;
+MeguClock_DS3231 rtc;
+DateTime lastTime;
+
 uint8_t bottomIndex = 0;
 static uint8_t lastBottomIndex = -1;
 
@@ -20,16 +22,6 @@ uint32_t systemTime,
          borderLastUpdate = 0,
          lastUpdate = 0,
          lastCheck = 0;
-
-const char daysFull[][10] PROGMEM = {
-  "Sunday",
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday"
-};
 
 const char bottomTextBuffer[20];
 const char bottomMessages[][20] PROGMEM = {

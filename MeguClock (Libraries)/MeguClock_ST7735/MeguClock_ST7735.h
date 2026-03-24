@@ -1,8 +1,6 @@
 #pragma once
 #include "Arduino.h"
 #include "Print.h"
-#include "gfxfont.h"
-#include <Adafruit_SPIDevice.h>
 #include <SPI.h>
 
 #define TFT_HEIGHT 160
@@ -27,7 +25,7 @@ private:
 public:
     MeguClock_ST7735(int8_t, int8_t, int8_t);
     ~MeguClock_ST7735() {};
-    void initR();
+    void init();
     void drawPixel(int16_t, int16_t, uint16_t);
     void fillRect(int16_t, int16_t, int16_t, int16_t, uint16_t);
     void fillScreen(uint16_t);
@@ -43,15 +41,13 @@ public:
 protected:
     void displayInit(const uint8_t*);
     void charBounds(unsigned char, int16_t*, int16_t*, int16_t*, int16_t*, int16_t*, int16_t*);
-    inline void SPI_BEGIN_TRANSACTION();
-    inline void SPI_END_TRANSACTION();
     struct {          
         SPIClass *_spi; 
         SPISettings settings;
     } hwspi;
-    int8_t _rst;
-    int8_t _cs;
-    int8_t _dc;
+    uint8_t _rst;
+    uint8_t _cs;
+    uint8_t _dc;
     int16_t _width;
     int16_t _height;
     int16_t cursor_x;    

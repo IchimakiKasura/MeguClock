@@ -1,7 +1,7 @@
 <div align="center">
 
 # MEGU-CLOCK
-*Its my goofy built digital clock with funi features.*
+*Its my goofy digital clock with funi features.*
 
 <img src="gui.jpg" height="450"/>
 
@@ -29,14 +29,24 @@
 - Arduino Uno/Nano (planning to upgrade to esp32 for faster shit? no more memory for goofy pictures)
 - 2 Push Buttons
 - Passive Buzzer
-- mini DS3231 (the one says "FOR PI" even tho I used it on arduino 😈)
+- mini DS3231 (the one says "FOR PI" even tho I used it on arduino 😈) *(Due to modified rtclib, Specifically DS3231)*
 - ST7735 1.8" 128x160 (tho planning to upgrade to larger one) *(Due to modified gfx, Specifically GREEN TAB)*
 
 wirings:
 - nah you read the sht and fcken guess it by urself.
 <br>
 <br>
-<br>
-<br>
-<br>
-<br>
+
+# More about
+- Fully independent, doesn't require other heavy ahh libraries as I've scrap most of unused shits and make a new out of it.
+```bash
+Used library                      Version
+Modified DS3231 for MEGU-CLOCK    0.6.7   
+Wire                              1.0     
+Modified ST7735 for MEGU-CLOCK    0.6.7   
+SPI                               1.0     
+EEPROM                            2.0     
+```
+- `Wire`, `SPI`, `EEPROM` are literally built-in
+
+_Feel free to use my modified [library](https://github.com/IchimakiKasura/IchiClock/tree/main/MeguClock%20(Libraries))_
