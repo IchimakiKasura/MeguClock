@@ -49,4 +49,4 @@ EEPROM                            2.0
 ```
 - `Wire`, `SPI`, `EEPROM` are literally built-in
 
-_Feel free to use my modified [library](https://github.com/IchimakiKasura/IchiClock/tree/main/MeguClock%20(Libraries))_
+_Feel free to use my modified [library](https://github.com/IchimakiKasura/MeguClock/tree/main/MeguClock%20(Libraries))_
