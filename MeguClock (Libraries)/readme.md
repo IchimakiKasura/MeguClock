@@ -41,6 +41,7 @@
         - `Load()`
         - `Save()`
         - `now()`
+        - `sync()`
         - `s_now` -> _built-in static variable for 'now' named 's_now'_
 
 # Usage

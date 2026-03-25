@@ -72,12 +72,12 @@ void applyAdjustment(int dir) {
         case FIELD_AMPM:  rtc.h = (rtc.h + 12) % 24; break;
         case FIELD_MONTH:
             rtc.mo = (rtc.mo + dir - 1 + 12) % 12 + 1;
-            dim = rtc.now().month();
+            dim = rtc.s_now.month();
             if (rtc.d > dim)
                 rtc.d = dim;
             break;
         case FIELD_DAY:
-            dim = rtc.now().day();
+            dim = rtc.s_now.day();
             rtc.d += dir;
             if (rtc.d < 1)
                 rtc.d = dim;
@@ -86,7 +86,7 @@ void applyAdjustment(int dir) {
             break;
         case FIELD_YEAR:
             rtc.y += dir;
-            dim = rtc.now().year();
+            dim = rtc.s_now.year();
             if (rtc.d > dim)
                 rtc.d = dim;
             break;

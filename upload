@@ -18,7 +18,5 @@ echo "Auto port: $COMPORT"
 # MANUAL PORT
 # read -p "Enter COM port: " COMPORT
 
-# OPTIONAL
-# ./verify
-
+./verify
 bin/arduino-cli upload -p "$COMPORT" --fqbn arduino:avr:nano MeguClock/MeguClock.ino -v

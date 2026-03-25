@@ -31,9 +31,11 @@
         My most proud moment is where I made the Megumin Logo efficiently as possible by using
         weird algorithms as the img2cpp consumes a lot of flash.
 
-        3/25/26 - Current goal would be reducing from 70% to around 60%? sounds impossible as
+        3/25/26 @ 3:00AM - Current goal would be reducing from 70% to around 60%? sounds impossible as
         I've used most of the trick to reduce flash, using registers, modified 3rd party libraries
         into barebones. Also less spaghetti code pls.
+
+        3/25/26 @ 5:45PM - kinda reduced it to 68%, 8% to go i guess?
 
     Author: Ichimaki Kasura
 **************************************************************************/
@@ -89,11 +91,13 @@ void bottomTextUpdate() {
 void initialize() {
     init();
 
+    rtc.init();
+    //rtc.sync();
+
 #ifndef CUSTOM_PINS
     Draw.init(2, 1, 0);
 #else
     Draw.init(TFT_CS, TFT_DC, TFT_RST);
-    digitalWrite(TFT_RST, HIGH);
 #endif
     M_COLORS::Load();
     Draw.SystemBoot();
@@ -103,13 +107,9 @@ void initialize() {
 
     Draw.FakeLoading();
 
-    rtc.init();
-
 #ifndef CUSTOM_PINS
-    // some brainfuck shit idfk, it saves like 40bytes?
-    // rest pins are input | D5 output
-    DDRD = 0x20;    // (1<<5) b00100000
-    PORTD = 0x0C;   // (1<<2)|(1<<3) b00001100
+    DDRD = 0x20;
+    PORTD = 0x0C;
 #else
     pinMode(BTN_SELECT, INPUT_PULLUP);
     pinMode(BTN_ADJUST, INPUT_PULLUP);
@@ -117,8 +117,6 @@ void initialize() {
 #endif
 
     Draw.bg();
-
-    //mRTC.sync();
 }
 
 int main() {
@@ -135,9 +133,7 @@ int main() {
         updateFunction([](){Draw.CheckeredBorders();}, borderLastUpdate, 500);
         updateFunction(bottomTextUpdate, lastBottomUpdate, 10000);
 
-        rtc.isRTC = rtc.rtcConnected();
-
-        if (rtc.isRTC) {
+        if (rtc.rtcConnected()) {
             rtc.updateRTC();
 
             #ifndef CUSTOM_PINS
@@ -153,13 +149,10 @@ int main() {
             CheckAlarm(rtc.s_now.hour(), rtc.s_now.minute(), rtc.s_now.second());
         }
 
-        if (rtc.isRTC && !lastRTCState) 
+        if (rtc.rtcConnected() && !lastRTCState) 
             Draw.ReDraw();
-        else if (!rtc.isRTC && lastRTCState) {
-            Draw.ReDraw({0,0,0,0,0,0});
-        }
 
-        lastRTCState = rtc.isRTC;
+        lastRTCState = rtc.rtcConnected();
     }
 
     return 0;

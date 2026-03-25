@@ -118,13 +118,13 @@ void DrawUI::Time(const DateTime &t) {
     _clearLine(50, 30);
 
     char Buf[3];
-    const char* ampm = rtc.isRTC ? _hideField(FIELD_AMPM) ? "--" : t.midday() : "??";
+    const char* ampm = rtc.rtcConnected() ? _hideField(FIELD_AMPM) ? "--" : t.midday() : "??";
     
     _tft->setTextSize(CLOCK_SIZE);
     _cacheClockBounds();
     _tft->setCursor(_clockX, 50);
 
-    if(rtc.isRTC)
+    if(rtc.rtcConnected())
     {
         sprintf(Buf, "%02d", t.twelveHour());
         _tft->setTextColor(_hideField(FIELD_HOUR) ? RED : M_COLORS::ClockColor());
@@ -157,9 +157,9 @@ void DrawUI::Date(const DateTime &t) {
     _tft->setTextColor(c);
     _tft->setCursor(30, 105);
 
-    if(rtc.isRTC)
+    if(rtc.rtcConnected())
     {
-        sprintf(Buf, "%04s", t.monthName());
+        sprintf(Buf, "%03s ", t.monthName());
         _tft->print(hideMo ? "--- " : Buf);
 
         if (!hideDay) sprintf(Buf, "%02d, ", t.day());

@@ -1,10 +1,15 @@
 .vscode
 TFT_SIMULATE/script.js
+
+# old
 IchiClock (Legacy)
+rtc (Legacy).h
+
 private.c
-old_rtc.h
 
 # bin folder is where the 'arduino-cli.exe' placed
 bin
 
-# MeguClock
+# symlink folders
+MeguClock_DS3231 (symlink)
+MeguClock_ST7735 (symlink)

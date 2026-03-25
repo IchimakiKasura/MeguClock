@@ -10,12 +10,14 @@
 **************************************************************************/
 #include "MeguClock_DS3231.h"
 
+// Offsets the time to fix the delay after upload.
+#define OFFSET 9
+
 DateTime MeguClock_DS3231::s_now;
 
 void MeguClock_DS3231::init() {
     Wire.begin();
     Wire.setWireTimeout(3000, true);
-    isRTC = rtcConnected();
     h = m = mo = d = y = 0;
 }
 
@@ -64,7 +66,7 @@ void MeguClock_DS3231::adjust(const DateTime &dt) {
         bin2bcd(dt.second()),
         bin2bcd(dt.minute()),
         bin2bcd(dt.hour()),
-        bin2bcd(dowToDS3231(dt.dayOfTheWeek())),
+        bin2bcd(dt.dayOfTheWeek() == 0 ? 7 : dt.dayOfTheWeek()),
         bin2bcd(dt.day()),
         bin2bcd(dt.month()),
         bin2bcd(dt.year() - 2000U)
@@ -107,4 +109,12 @@ void MeguClock_DS3231::Save() {
 */
 void MeguClock_DS3231::updateRTC() {
     s_now = now();
+}
+
+/*!
+   @brief It syncs.
+*/
+void MeguClock_DS3231::sync() {
+    DateTime t(F(__DATE__), F(__TIME__));
+    adjust(DateTime(t.year(), t.month(), t.day(), t.hour(), t.minute(), t.second() + OFFSET));
 }
