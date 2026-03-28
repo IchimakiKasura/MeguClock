@@ -21,38 +21,26 @@
         - MeguClock_DS3231 (Originally from Adafruit RTCLib)
         - MeguClock_ST7735 (Originally from Adafruit ST7735 & ST7789)
 
-    notes:
-        So far, I've used every other way to optimize the flash storage so I can put more pictures
-        or even animated boot.
-
-        This might be my ambiguous project that I made using Arduino/C++, its just a simple project
-        but It did paved way for me to learn some C++ as it deepends my knowledge about it.
-
-        My most proud moment is where I made the Megumin Logo efficiently as possible by using
-        weird algorithms as the img2cpp consumes a lot of flash.
-
-        3/25/26 @ 3:00AM - Current goal would be reducing from 70% to around 60%? sounds impossible as
-        I've used most of the trick to reduce flash, using registers, modified 3rd party libraries
-        into barebones. Also less spaghetti code pls.
-
-        3/25/26 @ 5:45PM - kinda reduced it to 68%, 8% to go i guess?
-
     Author: Ichimaki Kasura
 **************************************************************************/
 #include <Arduino.h>
-#include "utils/vars.h"
+#include "src/includes.hpp"
 
-inline void updateFunction(void (*func)(), uint32_t &ms, int16_t t) {
+inline void updateFunction(void (*func)(), uint16_t &ms, uint16_t t)
+{
     if (systemTime - ms < t) return;
     func();
     ms = systemTime;
 }
 
-void timeUpdate() {
-    if (!editMode) {
+void timeUpdate()
+{
+    if (!Draw.editMode)
+    {
         if (rtc.s_now.minute() != lastTime.minute() ||
-            rtc.s_now.hour()   != lastTime.hour()   ||
-            rtc.s_now.day()    != lastTime.day()) {
+            rtc.s_now.hour() != lastTime.hour() ||
+            rtc.s_now.day() != lastTime.day())
+        {
 
             Draw.ReDraw();
             lastTime = rtc.s_now;
@@ -61,7 +49,8 @@ void timeUpdate() {
         return;
     }
 
-    updateFunction([](){
+    updateFunction([]()
+    {
         Draw.blinkState = !Draw.blinkState;
 
         if (selected != FIELD_HOUR && !h_edited && rtc.s_now.hour() != rtc.h)
@@ -74,11 +63,14 @@ void timeUpdate() {
     }, Draw.lastBlink, 700);
 }
 
-void bottomTextUpdate() {
-    if (jingleState.playing) return;
+void bottomTextUpdate()
+{
+    if (jingleState.playing)
+        return;
 
     uint8_t newIndex;
-    do {
+    do
+    {
         newIndex = rand(46);
     } while (newIndex == lastBottomIndex && 46 > 1);
 
@@ -88,11 +80,12 @@ void bottomTextUpdate() {
     Draw.Bottom(strcpy_P(bottomTextBuffer, bottomMessages[newIndex]));
 }
 
-void initialize() {
+void initialize()
+{
     init();
 
     rtc.init();
-    //rtc.sync();
+    // rtc.sync();
 
 #ifndef CUSTOM_PINS
     Draw.init(2, 1, 0);
@@ -119,28 +112,30 @@ void initialize() {
     Draw.bg();
 }
 
-int main() {
+int main()
+{
     initialize();
 
     Draw.Header(0);
     Draw.Bottom(strcpy_P(bottomTextBuffer, bottomMessages[rand(4)]));
 
-    while(true) {
+    while (true)
+    {
         systemTime = millis();
-        
-        updateJingle();
 
+        updateJingle();
         updateFunction([](){Draw.CheckeredBorders();}, borderLastUpdate, 500);
         updateFunction(bottomTextUpdate, lastBottomUpdate, 10000);
 
-        if (rtc.rtcConnected()) {
+        if (rtc.rtcConnected())
+        {
             rtc.updateRTC();
 
-            #ifndef CUSTOM_PINS
-                adjustHeld = !(PIND & (1 << 3));
-            #else
-                adjustHeld = digitalRead(BTN_ADJUST);
-            #endif
+#ifndef CUSTOM_PINS
+            adjustHeld = !(PIND & (1 << 3));
+#else
+            adjustHeld = digitalRead(BTN_ADJUST);
+#endif
 
             timeUpdate();
 
@@ -149,7 +144,7 @@ int main() {
             CheckAlarm(rtc.s_now.hour(), rtc.s_now.minute(), rtc.s_now.second());
         }
 
-        if (rtc.rtcConnected() && !lastRTCState) 
+        if (rtc.rtcConnected() && !lastRTCState)
             Draw.ReDraw();
 
         lastRTCState = rtc.rtcConnected();

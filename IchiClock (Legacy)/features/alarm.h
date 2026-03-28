@@ -1,5 +1,4 @@
 #pragma once
-#include "../hardware/display.h"
 
 struct Alarms {
     const uint8_t Hours[5];

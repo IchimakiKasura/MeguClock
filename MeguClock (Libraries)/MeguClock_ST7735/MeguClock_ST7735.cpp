@@ -9,9 +9,21 @@
       - Arduino boards (AVR)
       - 1.8" GREEN TAB 128x160
       - Screen is Flipped
+    
+    If you wish to use higher resolution than 128x160, change the Width and
+    Height arguments from uint8_t to uint16_t:
+
+      setAddrWindow(uint16_t x, uint16_t y, uint8_t w, uint8_t h);
+      fillRect(int16_t x, int16_t y, uint8_t w, uint8_t h, uint16_t color);
+      getTextBounds(const char *str, int16_t x, int16_t y, int16_t *x1, int16_t *y1, uint8_t *w, uint8_t *h);
+      getTextBounds(const __FlashStringHelper *str, int16_t x, int16_t y, int16_t *x1, int16_t *y1, uint8_t *w, uint8_t *h);
+      uint8_t _width;
+      uint8_t _height;
 
     It is specifically designed for my simple digital clock as the library
     is flash intensive, I've scrap the unused ones to barebones of the code.
+
+    Author: Ichimaki Kasura
 **************************************************************************/
 #include "MeguClock_ST7735.h"
 #include "glcdfont.c"
@@ -159,7 +171,7 @@ void MeguClock_ST7735::displayInit(const uint8_t *addr) {
   @param  w  Width of window
   @param  h  Height of window
 */
-void MeguClock_ST7735::setAddrWindow(uint16_t x, uint16_t y, uint16_t w, uint16_t h) {
+void MeguClock_ST7735::setAddrWindow(uint16_t x, uint16_t y, uint8_t w, uint8_t h) {
     x += 2; y += 1;
     startWrite();
     writeAVRSPI(0x2A);
@@ -190,7 +202,7 @@ void MeguClock_ST7735::drawPixel(int16_t x, int16_t y, uint16_t color) {
   @param  h  Height of window
   @param  color 16-bit 5-6-5 Color to fill with
 */
-void MeguClock_ST7735::fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color) {
+void MeguClock_ST7735::fillRect(int16_t x, int16_t y, uint8_t w, uint8_t h, uint16_t color) {
   if(x>=_width || y>=_height || w<=0 || h<=0) return;
   if(x+w-1>=_width)  w=_width -x;
 if(y+h-1>=_height) h=_height-y;
@@ -269,7 +281,7 @@ size_t MeguClock_ST7735::write(uint8_t c) {
     @param  w    The boundary width, returned by function
     @param  h    The boundary height, returned by function
 */
-void MeguClock_ST7735::getTextBounds(const char *str, int16_t x, int16_t y, int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h) {
+void MeguClock_ST7735::getTextBounds(const char *str, int16_t x, int16_t y, int16_t *x1, int16_t *y1, uint8_t *w, uint8_t *h) {
     uint8_t c;
     int16_t minx = 0x7FFF, miny = 0x7FFF, maxx = -1, maxy = -1;
     *x1 = x; *y1 = y; *w = *h = 0;
@@ -289,7 +301,7 @@ void MeguClock_ST7735::getTextBounds(const char *str, int16_t x, int16_t y, int1
     @param    w      The boundary width, set by function
     @param    h      The boundary height, set by function
 */
-void MeguClock_ST7735::getTextBounds(const __FlashStringHelper *str, int16_t x, int16_t y, int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h) {
+void MeguClock_ST7735::getTextBounds(const __FlashStringHelper *str, int16_t x, int16_t y, int16_t *x1, int16_t *y1, uint8_t *w, uint8_t *h) {
     uint8_t *s = (uint8_t *)str, c;
     int16_t minx = 0x7FFF, miny = 0x7FFF, maxx = -1, maxy = -1;
     *x1 = x; *y1 = y; *w = *h = 0;
@@ -333,21 +345,21 @@ void MeguClock_ST7735::charBounds(unsigned char c, int16_t *x, int16_t *y, int16
 /*!
    @brief Start a display-writing routine.
 */
-void MeguClock_ST7735::startWrite() {
+inline void MeguClock_ST7735::startWrite() {
   hwspi._spi->beginTransaction(hwspi.settings);
   PORTB &= ~(1 << _cs);
 }
 /*!
    @brief Ends a display-writing routine.
 */
-void MeguClock_ST7735::endWrite() {
-  PORTB &= ~(1 << _cs);
+inline void MeguClock_ST7735::endWrite() {
+  PORTB |= ~(1 << _cs);
   hwspi._spi->endTransaction();
 }
 /*!
    @brief Writes to AVR's SPI connection.
 */
-void MeguClock_ST7735::writeAVRSPI(uint8_t addr) {
+inline void MeguClock_ST7735::writeAVRSPI(uint8_t addr) {
   PORTB &= ~(1 << _dc);
   AVR_WRITESPI(addr);
   PORTB |= (1 << _dc);
@@ -355,9 +367,9 @@ void MeguClock_ST7735::writeAVRSPI(uint8_t addr) {
 /*!
    @brief Color, just color.
 */
-inline void MeguClock_ST7735::writeColor(uint16_t color, uint32_t len) {
+inline void MeguClock_ST7735::writeColor(uint16_t color, uint32_t length) {
     uint8_t hi = color >> 8, lo = color & 0xFF;
-    while (len--) {
+    while (length--) {
       AVR_WRITESPI(hi);
       AVR_WRITESPI(lo);
     }

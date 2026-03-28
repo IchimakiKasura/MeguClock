@@ -4,22 +4,23 @@
 /*!
     @brief  Modified DateTime from RTCLib.
 */
-class DateTime {
+class DateTime
+{
 public:
     DateTime() = default;
-    DateTime(uint16_t, uint8_t, uint8_t, uint8_t, uint8_t, uint8_t);
-    DateTime(const __FlashStringHelper*, const __FlashStringHelper*);
-    
+    DateTime(uint16_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t minute, uint8_t seconds);
+    DateTime(const __FlashStringHelper *date, const __FlashStringHelper *time);
+
     /*! @brief Year haha */
     uint16_t year() const { return 2000U + yOff; }
     /*! @brief Month haha */
     uint8_t month() const { return m; }
-    char* monthName() const;
+    char *monthName() const;
     /*! @brief Day haha */
     uint8_t day() const { return d; }
     /*! @brief Hour haha */
     uint8_t hour() const { return hh; }
-    
+
     /*!
         @brief  Returns 12 hour clock.
 
@@ -28,15 +29,16 @@ public:
         This code was from the RTCLib's DateTime
     */
     uint8_t twelveHour() const { return (hh == 0 || hh == 12) ? 12 : (hh > 12 ? hh - 12 : hh); }
-    
+
     /*! @brief AM or PM */
-    char* midday() const { return hh >= 12 ? "PM" : "AM"; }
+    char *midday() const { return hh >= 12 ? "PM" : "AM"; }
     /*! @brief Minute haha */
     uint8_t minute() const { return mm >= 59 ? 59 : mm; };
     /*! @brief Second haha */
     uint8_t second() const { return ss; };
     uint8_t dayOfTheWeek() const;
-    char* dayOfTheWeekName() const;
+    char *dayOfTheWeekName() const;
+
 protected:
     uint8_t yOff;
     uint8_t m;

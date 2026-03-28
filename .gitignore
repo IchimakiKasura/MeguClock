@@ -1,8 +1,8 @@
 .vscode
 
-# old
-IchiClock (Legacy)
-rtc (Legacy).h
+# legacy ones
+# IchiClock (Legacy)
+# rtc (Legacy).h
 
 # bin folder is where the 'arduino-cli.exe' placed
 bin/arduino-cli.exe

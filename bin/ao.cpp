@@ -1,3 +1,12 @@
+/**************************************************************************
+ 
+    Simple Arduino's Verify and Upload.
+
+    Specifically coded for Win32 only. 
+
+    Author: Ichimaki Kasura
+
+**************************************************************************/
 #include <cstdlib>
 #include <filesystem>
 #include <iostream>
@@ -11,12 +20,11 @@ bool findSketch(fpath start, fpath& result) {
     fpath current = start;
 
     for (int up = 0; up < 3; up++) {
-        for (auto& p : fs::recursive_directory_iterator(current)) {
+        for (auto& p : fs::recursive_directory_iterator(current))
             if (p.path().filename() == "MeguClock.ino") {
                 result = p.path();
                 return true;
             }
-        }
         if (current.has_parent_path())
             current = current.parent_path();
     }
@@ -29,9 +37,8 @@ string runAndRead(const char* cmd) {
     FILE* pipe = _popen(cmd, "r");
     if (!pipe) return "";
 
-    while (fgets(buffer, sizeof(buffer), pipe)) {
+    while (fgets(buffer, sizeof(buffer), pipe)) 
         result += buffer;
-    }
     _pclose(pipe);
     return result;
 }
@@ -69,9 +76,9 @@ int main(int argc, char* argv[]) {
         fpath ard_relative = fs::relative(arduinoCli, fs::current_path()),
               ino_relative = fs::relative(ino, fs::current_path());
 
-        if(sketch == "-v") {
+        if(sketch == "-v") 
             cmd = ard_relative.string() + " compile --fqbn arduino:avr:nano " + ino_relative.string() + " -vvv";
-        } else if (sketch == "-u") {
+        else if (sketch == "-u") {
 
             string rar = ard_relative.string() + " board list";
             string boards = runAndRead(rar.c_str());

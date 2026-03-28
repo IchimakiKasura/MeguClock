@@ -10,17 +10,17 @@
 
 - Fake loading because god knows its just a simple mcu.
 - Customizable uh colors
-- clock can be adjusted using 2 buttons
-- added shitty buzzer to uh for alarm idfk.
-- alarms are preloaded/hardcoded? idfk lmao
+- Clock can be adjusted using 2 buttons
+- Added shitty buzzer to uh for alarm idfk.
+- Alarms are preloaded/hardcoded? idfk lmao
     - 6:00 AM `FNAF`
     - 10:00 AM `Samsung Morning Flower`
     - 12:00 PM `Winchester Chime`
     - 3:00 PM `Winchester Chime`
     - 10:00 PM `Short ahh Twinkle star smh`
-- has random ahh messages every 10 seconds at the bottom. *(can be customized through code ofc)*
-- has an epic border.
-
+- Has random ahh messages every 10 seconds at the bottom. *(can be customized through code ofc)*
+- Has an epic border.
+- Uses only 65%? of program storage space whaaat? idfk.
 <div align="center">
 
 ## requirements?
@@ -34,8 +34,10 @@
 
 wirings:
 - nah you read the sht and fcken guess it by urself.
-<br>
-<br>
+
+Run:
+- do `bin/ao -v` or `bin/s_ao -v` for verify and `bin/ao -u` or `bin/s_ao -u` to upload to the nearest comport. _(can be modified on ao.cpp)_
+    - _(s_ao.exe is a static build while ao.exe is built without linked libraries)_
 
 # More about
 - Fully independent, doesn't require other heavy ahh libraries as I've scrap most of unused shits and make a new out of it.
