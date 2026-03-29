@@ -29,6 +29,8 @@
 #include <Arduino.h>
 #include "src/includes.h"
 
+// #define RESET_COLORS
+
 inline void updateFunction(void (*func)(), uint16_t &ms, uint16_t t)
 {
     if (systemTime - ms < t) return;
@@ -41,11 +43,13 @@ void timeUpdate()
     if (!Draw.editMode)
     {
         if (rtc.s_now.minute() != lastTime.minute() ||
-            rtc.s_now.hour() != lastTime.hour() ||
-            rtc.s_now.day() != lastTime.day())
+            rtc.s_now.hour() != lastTime.hour())
         {
 
-            Draw.ReDraw();
+            Draw.Time(rtc.s_now);
+            // so it doesn't redraw the date if only the minute/hour changes
+            if(rtc.s_now.day() != lastTime.day())
+                Draw.Date(rtc.s_now);
             lastTime = rtc.s_now;
             quickBeepStart();
         }
@@ -61,7 +65,7 @@ void timeUpdate()
 
         if (selected != FIELD_MIN && !m_edited && rtc.s_now.minute() != rtc.m)
             rtc.m = rtc.s_now.minute();
-
+        
         Draw.ReDraw({rtc.y, rtc.mo, rtc.d, rtc.h, rtc.m, rtc.s_now.second()});
     }, Draw.lastBlink, 700);
 }
@@ -77,8 +81,7 @@ void bottomTextUpdate()
         newIndex = rand(46);
     } while (newIndex == lastBottomIndex && 46 > 1);
 
-    lastBottomIndex = newIndex;
-    bottomIndex = newIndex;
+    lastBottomIndex = bottomIndex = newIndex;
 
     Draw.Bottom(strcpy_P(bottomTextBuffer, bottomMessages[newIndex]));
 }
@@ -91,7 +94,6 @@ void initialize()
 
     // rtc.sync();
 
-// #define RESET_COLORS
 #ifdef RESET_COLORS
     EEPROM.update(0, ClockColor_index);
     EEPROM.update(1, DateColor_index);

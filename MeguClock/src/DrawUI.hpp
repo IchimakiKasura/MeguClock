@@ -41,7 +41,8 @@ public:
     void Header(boolean t);
     void Time(const DateTime &t);
     void Date(const DateTime &t);
-    void Bottom(const char *str);
+    template<typename T>
+    void Bottom(const T str);
     void SystemBoot();
     void FakeLoading();
     void CheckeredBorders(uint16_t fill, uint16_t dash);
@@ -55,10 +56,9 @@ void DrawUI::_cacheClockBounds()
     if (_clockBoundsCached)
         return;
 
-    uint8_t _clockW, _clockH;
-    int16_t x1, y1;
+    uint8_t _clockW;
 
-    _tft->getTextBounds(F("00:00"), 0, 0, &x1, &y1, &_clockW, &_clockH);
+    _tft->getTextBounds("00:00", 0, 0, &_clockW, nullptr);
 
     _clockX = (128 - _clockW) / 2;
     _clockBoundsCached = true;
@@ -77,12 +77,11 @@ inline void DrawUI::_clearLine(const uint8_t &y, const uint8_t &h)
 template <typename T>
 void DrawUI::_CenteredText(const T t, const uint8_t &y, const uint8_t &s, const uint16_t &c)
 {
-    int16_t x1, y1;
-    uint8_t w, h;
+    uint8_t w;
 
     _tft->setTextSize(s);
     _tft->setTextColor(c);
-    _tft->getTextBounds(t, 0, 0, &x1, &y1, &w, &h);
+    _tft->getTextBounds(t, 0, 0, &w, nullptr);
     _tft->setCursor((128 - w) / 2, y);
     _tft->print(t);
 }
@@ -125,16 +124,12 @@ void DrawUI::Header(boolean t)
     _clearLine(10, 20);
 
     if (t == 0)
-    {
-        _CenteredText(F("MEGUMIN"), 10, HEADER_SIZE, WHITE);
+        _CenteredText(F("MEGUMIN"), 10, HEADER_SIZE, WHITE),
         _CenteredText(F("CLOCK"), 23, HEADER_SIZE, WHITE);
-    }
     else
-    {
-        _CenteredText(F("CONFIGURE"), 10, HEADER_SIZE, WHITE);
+        _CenteredText(F("CONFIGURE"), 10, HEADER_SIZE, WHITE),
         _CenteredText(F("TIME/DATE"), 23, HEADER_SIZE, WHITE);
-    }
-
+    
     _Logo(19, 22, 1);
     _Logo(109, 22, 1);
 }
@@ -144,7 +139,8 @@ void DrawUI::Time(const DateTime &t)
     _clearLine(50, 30);
 
     char Buf[3];
-    const char *ampm = rtc.rtcConnected() ? _hideField(FIELD_AMPM) ? "--" : t.midday() : "??";
+    const char *blink = "--";
+    const char *ampm = rtc.rtcConnected() ? _hideField(FIELD_AMPM) ? blink : t.midday() : F("??:??");
 
     _tft->setTextSize(CLOCK_SIZE);
     _cacheClockBounds();
@@ -152,19 +148,18 @@ void DrawUI::Time(const DateTime &t)
 
     if (rtc.rtcConnected())
     {
-        sprintf(Buf, "%02d", t.twelveHour());
+        p2s(Buf, "%02d", t.twelveHour());
         _tft->setTextColor(_hideField(FIELD_HOUR) ? RED : M_COLORS::ClockColor());
-        _tft->print(_hideField(FIELD_HOUR) ? "--" : Buf);
+        _tft->print(_hideField(FIELD_HOUR) ? blink : Buf);
 
         _tft->setTextColor(WHITE);
         _tft->print(":");
 
-        sprintf(Buf, "%02d", t.minute());
+        p2s(Buf, "%02d", t.minute());
         _tft->setTextColor(_hideField(FIELD_MIN) ? RED : M_COLORS::ClockColor());
-        _tft->print(_hideField(FIELD_MIN) ? "--" : Buf);
+        _tft->print(_hideField(FIELD_MIN) ? blink : Buf);
     }
-    else
-        _tft->print(F("??:??"));
+    else _tft->print(F("??:??"));
 
     _clearLine(80, 20);
     _CenteredText(ampm, 80, AMPM_SIZE, _hideField(FIELD_AMPM) ? RED : M_COLORS::ClockColor());
@@ -187,25 +182,25 @@ void DrawUI::Date(const DateTime &t)
 
     if (rtc.rtcConnected())
     {
-        sprintf(Buf, "%03s ", t.monthName());
+        p2s(Buf, "%03s ", t.monthName());
         _tft->print(hideMo ? "--- " : Buf);
 
         if (!hideDay)
-            sprintf(Buf, "%02d, ", t.day());
+            p2s(Buf, "%02d, ", t.day());
         _tft->print(hideDay ? "--, " : Buf);
 
         if (!hideYr)
-            sprintf(Buf, "%04d", t.year());
+            p2s(Buf, "%04d", t.year());
         _tft->print(hideYr ? "----" : Buf);
 
-        sprintf(Buf, "%s", t.dayOfTheWeekName());
+        strcpy(Buf, t.dayOfTheWeekName());
         _CenteredText(Buf, 105 + 10, DATE_SIZE, c);
     }
-    else
-        _tft->print(F("  RtcError"));
+    else _tft->print(F("  RtcError"));
 }
 
-void DrawUI::Bottom(const char *t)
+template<typename T>
+void DrawUI::Bottom(const T t)
 {
     _clearLine(140, 12);
     _CenteredText(t, 140, BOTTOM_SIZE, GREEN);
@@ -213,7 +208,7 @@ void DrawUI::Bottom(const char *t)
 
 void DrawUI::SystemBoot()
 {
-    _CenteredText(F("MEGU-CLOCK"), 90, 2, WHITE);
+    _CenteredText("MEGU-CLOCK", 90, 2, WHITE);
     _Logo(64, 55, 3);
 }
 
@@ -222,7 +217,7 @@ void DrawUI::FakeLoading()
     static const uint8_t barSteps[] = {0, 25, 50, 55, 60, 65, 85, 100};
     static const uint16_t delays[] = {250, 250, 250, 150, 150, 150, 250, 500};
 
-    _CenteredText(F("system loading"), 125, 1, YELLOW);
+    _CenteredText("system loading", 125, 1, YELLOW);
 
     _tft->fillRect(40, 145, 42, 6, WHITE);
     _tft->fillRect(41, 146, 40, 4, 0x40A3);
@@ -236,7 +231,7 @@ void DrawUI::FakeLoading()
 
 void DrawUI::CheckeredBorders(uint16_t fillColor = M_COLORS::ClockColor(), uint16_t dashColor = M_COLORS::DateColor())
 {
-    uint16_t hY[] = {1, 38, 128, 158};
+    uint8_t hY[] = {1, 38, 128, 158};
     static bool swapColors = false;
 
     if (swapColors)
@@ -276,6 +271,5 @@ void DrawUI::TextColorChange(boolean saveColor = false)
 
     ReDraw();
 
-    if (saveColor)
-        M_COLORS::Save();
+    if (saveColor) M_COLORS::Save();
 }

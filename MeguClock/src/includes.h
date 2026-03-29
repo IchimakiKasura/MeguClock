@@ -3,6 +3,7 @@
 #include <MeguClock_DS3231.h>
 #include "utils/vars.h"
 #include "utils/rand.h"
+#include "utils/p2s.h"
 #include "config/ClockConfig.h"
 #include "DrawUI.hpp"
 #include "buzzer.h"

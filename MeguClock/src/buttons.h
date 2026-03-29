@@ -202,7 +202,7 @@ void handleBothButtons()
 
     if (sel && adj && abs((long)(lastSelect - lastAdjust)) < 200 && !Draw.editMode)
     {
-        Draw.Bottom("KONOSUBA!!");
+        Draw.Bottom(F("KONOSUBA!!"));
         Jingle(CHIISANA_BOKENSHA_JINGLE, false, true, 150);
         lastSelect = lastAdjust = 0;
         return;

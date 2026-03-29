@@ -31,8 +31,12 @@ public:
     void fillScreen(uint16_t color);
     inline void writeColor(uint16_t color, uint32_t length);
     void drawChar(int16_t x, int16_t y, unsigned char c, uint16_t color, uint16_t bg, uint8_t size_tx);
+    void getTextBounds(const char *str, int16_t x, int16_t y, uint8_t *w, uint8_t *h);
+    void getTextBounds(const __FlashStringHelper *str, int16_t x, int16_t y, uint8_t *w, uint8_t *h);
+#ifdef OFFSET_ORIGIN_ENABLE
     void getTextBounds(const char *str, int16_t x, int16_t y, int16_t *x1, int16_t *y1, uint8_t *w, uint8_t *h);
     void getTextBounds(const __FlashStringHelper *str, int16_t x, int16_t y, int16_t *x1, int16_t *y1, uint8_t *w, uint8_t *h);
+#endif
     using Print::write;
     size_t write(uint8_t c);
     inline void setTextSize(uint8_t s) { textsize = (s > 0) ? s : 1; }

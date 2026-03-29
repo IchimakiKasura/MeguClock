@@ -17,6 +17,8 @@
     - `setTextColor()`
     - `writeColor()`
 
+_note: the constructor (cs, dc, rst) only accepts the REGISTER pinouts, for faster signal idk?_
+
 ## DS3231
 - Customized RTC library for DS3231
 

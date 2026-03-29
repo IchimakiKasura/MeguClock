@@ -17,3 +17,5 @@ into barebones. Also less spaghetti code pls.
 - 3/28/26 @ 3:30AM - 67 SIX SEVEN SIX SEVEN SIX SEVEN SIX SEVEN percent, sketch uses 67% of program space
 
 - 3/28/26 @ 11:33PM - 65% program space. 5% to go idfk.
+
+- 3/30/26 @ 3:16AM - yey 62% program space.
