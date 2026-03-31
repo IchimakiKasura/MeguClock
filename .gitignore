@@ -10,3 +10,12 @@ bin/arduino-cli.exe
 # symlink folders
 MeguClock_DS3231 (symlink)
 MeguClock_ST7735 (symlink)
+
+# embedded pcb
+Embedded PCB/MeguClock
+plan.txt
+ATMEGA328P Pinout.jpg
+Nano_SCHEM.jpg
+MEGUCLOCK SCHEMATIC.png
+front_board_old.png
+back_board_old.png
