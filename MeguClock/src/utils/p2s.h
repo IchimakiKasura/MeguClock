@@ -1,7 +1,9 @@
 #pragma once
+#include <stdarg.h>
 // Another lightweight sprintf
-template<typename T>
-inline void p2s(char* out, const char* fmt, T val) {
+inline void p2s(char* out, const char* fmt, ...) {
+    va_list args;
+    va_start(args, fmt);
     char* o = out;
     for (; *fmt; fmt++)
         if (*fmt == '%') {
@@ -16,7 +18,7 @@ inline void p2s(char* out, const char* fmt, T val) {
             switch (*fmt) {
                 // scope bug if i didn't add brackets
                 case 's': {
-                    const char* str = val;
+                    const char* str = va_arg(args, const char*);
                     uint8_t len = strlen(str),
                             pad = (len < width) ? (width - len) : 0;
                     while (pad--) *o++ = ' ';
@@ -24,7 +26,7 @@ inline void p2s(char* out, const char* fmt, T val) {
                 } break;
 
                 case 'd': {
-                    for (int v = val, i = width - 1; i >= 0; i--) {
+                    for (int v = va_arg(args, int), i = width - 1; i >= 0; i--) {
                         o[i] = '0' + (v % 10);
                         v /= 10;
                     }
@@ -33,5 +35,6 @@ inline void p2s(char* out, const char* fmt, T val) {
             }
 
         } else *o++ = *fmt;
+    va_end(args);
     *o = '\0';
 }

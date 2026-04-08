@@ -19,3 +19,7 @@ into barebones. Also less spaghetti code pls.
 - 3/28/26 @ 11:33PM - 65% program space. 5% to go idfk.
 
 - 3/30/26 @ 3:16AM - yey 62% program space.
+
+- 4/8/26 @ 1:32AM - I think I've hit the physical limit of optimization, 62%. Only things possible are reducing the bottom messages and removing unused functions on the libraries.
+
+- 4/9/26 @ 4:16AM - I have managed to get 61% NO WAY!

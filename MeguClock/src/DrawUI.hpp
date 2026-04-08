@@ -140,7 +140,7 @@ void DrawUI::Time(const DateTime &t)
 
     char Buf[3];
     const char *blink = "--";
-    const char *ampm = rtc.rtcConnected() ? _hideField(FIELD_AMPM) ? blink : t.midday() : F("??:??");
+    const char *ampm = rtc.rtcConnected() ? _hideField(FIELD_AMPM) ? blink : t.midday() : "??:??";
 
     _tft->setTextSize(CLOCK_SIZE);
     _cacheClockBounds();
@@ -215,8 +215,8 @@ void DrawUI::SystemBoot()
 void DrawUI::FakeLoading()
 {
     static const uint8_t barSteps[] = {0, 25, 50, 55, 60, 65, 85, 100};
-    static const uint16_t delays[] = {250, 250, 250, 150, 150, 150, 250, 500};
-
+    static const uint8_t delays[] = {5, 5, 5, 3, 3, 3, 5, 10};
+    
     _CenteredText("system loading", 125, 1, YELLOW);
 
     _tft->fillRect(40, 145, 42, 6, WHITE);
@@ -225,7 +225,7 @@ void DrawUI::FakeLoading()
     for (byte i = 0; i < 8; i++)
     {
         _tft->fillRect(41, 146, (40 * barSteps[i]) / 100, 4, YELLOW);
-        delay(delays[i]);
+        delay(delays[i] * 50);
     }
 }
 
