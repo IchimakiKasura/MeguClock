@@ -34,6 +34,9 @@ tests:
 - TEST 4
     - Removed extra schottky diode
     - Added two resistor (keeps CS pins LOW)
+- TEST 5
+    - Power Traces widen to 1mm
+    - Fixed some Traces (Used auto tracer but fixed long traces)
 
 Materials/Components:
 - ATMEGA328P

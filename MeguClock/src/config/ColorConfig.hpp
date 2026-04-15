@@ -9,7 +9,7 @@ public:
     static const uint16_t colors[8];
 
     inline static uint16_t ClockColor(), DateColor();
-    inline static void Save(), Load();
+    inline static void Save(), Load(), Reset();
 };
 
 uint8_t M_COLORS::ClockColor_index = 1,
@@ -46,4 +46,10 @@ inline static void M_COLORS::Load()
 {
     ClockColor_index = EEPROM.read(0);
     DateColor_index = EEPROM.read(1);
+}
+
+inline static void M_COLORS::Reset()
+{
+    EEPROM.update(0, ClockColor_index);
+    EEPROM.update(1, DateColor_index);
 }

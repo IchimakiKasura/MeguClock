@@ -3,10 +3,15 @@
 // for TFT pinouts, it accepts registers only specifically B type (pins 8-13)
 // because 10,9 are the mosi and clk usually (SPI pins) for arduino uno/nano
 // required to modify the library if you're willing to use default pinouts instead of registers.
+//
+// 4/14/26 - UPDATE: You can use "#undef FAST_PINOUT" to use regular pins e.g. 10, 8, 9
+//
 // #define CUSTOM_PINS
+//
 // #define TFT_CS   2 //10
 // #define TFT_RST  0 //8
 // #define TFT_DC   1 //9
+//
 // #define BTN_SELECT 2
 // #define BTN_ADJUST 3
 // #define BUZZER     5

@@ -47,9 +47,10 @@ void timeUpdate()
         {
 
             Draw.Time(rtc.s_now);
-            // so it doesn't redraw the date if only the minute/hour changes
+
             if(rtc.s_now.day() != lastTime.day())
                 Draw.Date(rtc.s_now);
+
             lastTime = rtc.s_now;
             quickBeepStart();
         }
@@ -78,12 +79,24 @@ void bottomTextUpdate()
     uint8_t newIndex;
     do
     {
-        newIndex = rand(46);
-    } while (newIndex == lastBottomIndex && 46 > 1);
+        newIndex = rand(35);
+    } while (newIndex == lastBottomIndex && 35 > 1);
 
     lastBottomIndex = bottomIndex = newIndex;
 
     Draw.Bottom(strcpy_P(bottomTextBuffer, bottomMessages[newIndex]));
+}
+
+void checkRTCConnection()
+{
+    if (!rtc.rtcConnected())
+    {
+        rtc.init();
+        if (rtc.rtcConnected())
+        {
+            Draw.ReDraw();
+        }
+    }
 }
 
 void initialize()
@@ -93,11 +106,7 @@ void initialize()
     rtc.init();
 
     // rtc.sync();
-
-#ifdef RESET_COLORS
-    EEPROM.update(0, ClockColor_index);
-    EEPROM.update(1, DateColor_index);
-#endif
+    // M_COLORS::Reset();
        
 #ifndef CUSTOM_PINS
     Draw.init(2, 1, 0);
@@ -107,8 +116,8 @@ void initialize()
     M_COLORS::Load();
     Draw.SystemBoot();
 
-    // Jingle(CHIISANA_BOKENSHA_JINGLE, true);
-    // delay(100);
+    Jingle(CHIISANA_BOKENSHA_JINGLE, true);
+    delay(100);
 
     Draw.FakeLoading();
 
@@ -138,6 +147,7 @@ int main()
         updateJingle();
         updateFunction([](){Draw.CheckeredBorders();}, borderLastUpdate, 500);
         updateFunction(bottomTextUpdate, lastBottomUpdate, 10000);
+        updateFunction(checkRTCConnection, lastRTCCheck, 2000);
 
         if (rtc.rtcConnected())
         {
@@ -155,9 +165,6 @@ int main()
 
             CheckAlarm(rtc.s_now.hour(), rtc.s_now.minute(), rtc.s_now.second());
         }
-
-        if (rtc.rtcConnected() && !lastRTCState)
-            Draw.ReDraw();
 
         lastRTCState = rtc.rtcConnected();
     }

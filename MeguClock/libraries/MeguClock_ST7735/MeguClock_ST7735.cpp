@@ -36,6 +36,12 @@
 #include <avr/pgmspace.h>
 
 #define AVR_WRITESPI(x) for (SPDR = (x); (!(SPSR & _BV(SPIF)));)
+/*!
+    @brief Uses REGSITERS for faster signal.
+
+    undefine to use normal pinouts
+*/
+#define FAST_PINOUT
 
 static const uint8_t PROGMEM
   Rcmd1[] = {
@@ -127,7 +133,9 @@ static const uint8_t PROGMEM
     @param cs Chip select pin # IN DDRB
     @param dc Data/Command pin # IN DDRB
     @param rst reset pin # IN DDRB
-    @note IT ONLY ACCEPTS PIN REGISTERS
+    @note By default, It only accepts REGISTER PINS.
+
+    use `#undef FAST_PINOUT` to use default data pins. 
 */
 MeguClock_ST7735::MeguClock_ST7735(int8_t cs, int8_t dc, int8_t rst) : _rst(rst), _cs(cs), _dc(dc)
 {
@@ -142,8 +150,17 @@ MeguClock_ST7735::MeguClock_ST7735(int8_t cs, int8_t dc, int8_t rst) : _rst(rst)
 */
 void MeguClock_ST7735::init()
 {
+#ifdef FAST_PINOUT 
     DDRB = (1 << _rst) | (1 << _dc) | (1 << _cs);
     PORTB |= (1 << _rst) | (1 << _dc) | (1 << _cs);
+#else
+    pinMode(_rst, OUTPUT);
+    pinMode(_dc, OUTPUT);
+    pinMode(_cs, OUTPUT);
+    digitalWrite(_rst, HIGH);
+    digitalWrite(_dc, HIGH);
+    digitalWrite(_cs, HIGH);
+#endif
     if (hwspi._spi)
         hwspi._spi->begin();
     startWrite();
@@ -461,14 +478,22 @@ void MeguClock_ST7735::charBounds(unsigned char c, int16_t *x, int16_t *y, int16
 inline void MeguClock_ST7735::startWrite()
 {
     hwspi._spi->beginTransaction(hwspi.settings);
+#ifdef FAST_PINOUT
     PORTB &= ~(1 << _cs);
+#else
+    digitalWrite(_cs, LOW);
+#endif
 }
 /*!
    @brief Ends a display-writing routine.
 */
 inline void MeguClock_ST7735::endWrite()
 {
-    PORTB |= ~(1 << _cs);
+#ifdef FAST_PINOUT
+    PORTB |= (1 << _cs);
+#else
+    digitalWrite(_cs, HIGH);
+#endif
     hwspi._spi->endTransaction();
 }
 /*!
@@ -476,9 +501,15 @@ inline void MeguClock_ST7735::endWrite()
 */
 inline void MeguClock_ST7735::writeAVRSPI(uint8_t addr)
 {
+#ifdef FAST_PINOUT
     PORTB &= ~(1 << _dc);
     AVR_WRITESPI(addr);
     PORTB |= (1 << _dc);
+#else
+    digitalWrite(_dc, LOW);
+    AVR_WRITESPI(addr);
+    digitalWrite(_dc, HIGH);
+#endif
 }
 /*!
    @brief Color, just color.

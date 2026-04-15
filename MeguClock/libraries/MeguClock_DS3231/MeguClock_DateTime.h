@@ -18,7 +18,7 @@ public:
     char *monthName() const;
     /*! @brief Day haha */
     uint8_t day() const { return d; }
-    /*! @brief Hour haha */
+    /*! @brief 24 Hour haha */
     uint8_t hour() const { return hh; }
 
     /*!

@@ -17,6 +17,10 @@
     - `setTextColor()`
     - `writeColor()`
 
+- It includes FAST PINOUTS (Register pinouts) by default
+    - do `#undef FAST_PINOUT` to use default pinMode/data pins.
+        - _NOTE: FAST PINOUTS uses DDRB registers_
+
 _note: the constructor (cs, dc, rst) only accepts the REGISTER pinouts, for faster signal idk?_
 
 ## DS3231

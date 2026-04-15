@@ -1,9 +1,9 @@
 # notes:
 - So far, I've used every other way to optimize the flash storage so I can put more pictures
-or even animated boot.
+or even animated boot or future libraries I want to put like SPI Flash storage etc.
 
 - This might be my ambiguous project that I made using Arduino/C++, its just a simple project
-but It did paved way for me to learn some C++ as it deepends my knowledge about it.
+but It did paved way for me to learn some C++ as it deepens my knowledge about it.
 
 - My most proud moment is where I made the Megumin Logo efficiently as possible by using
 weird algorithms as the img2cpp consumes a lot of flash.
@@ -23,3 +23,5 @@ into barebones. Also less spaghetti code pls.
 - 4/8/26 @ 1:32AM - I think I've hit the physical limit of optimization, 62%. Only things possible are reducing the bottom messages and removing unused functions on the libraries.
 
 - 4/9/26 @ 4:16AM - I have managed to get 61% NO WAY!
+
+- 4/13/26 @ 11:38AM - I have now reached 60% by reducing the bottom texts from 46 to 35 because I have no choice whatsoever

@@ -12,9 +12,7 @@ enum Field
     FIELD_MONTH,
     FIELD_DAY,
     FIELD_YEAR
-};
-
-Field selected = FIELD_HOUR;
+} selected = FIELD_HOUR;
 
 class DrawUI
 {
@@ -24,14 +22,11 @@ private:
     bool _clockBoundsCached = false,
          _timeDrawnErr = false,
          _dateDrawnErr = false;
-
-    void _cacheClockBounds();
     inline bool _hideField(const Field &f);
     inline void _clearLine(const uint8_t &y, const uint8_t &h);
     template <typename T>
     void _CenteredText(const T str, const uint8_t &y, const uint8_t &size, const uint16_t &color);
     void _Logo(uint8_t x, uint8_t y, uint8_t scale);
-
 public:
     bool blinkState = true,
          editMode = false;
@@ -41,8 +36,7 @@ public:
     void Header(boolean t);
     void Time(const DateTime &t);
     void Date(const DateTime &t);
-    template<typename T>
-    void Bottom(const T str);
+    void Bottom(const char* str);
     void SystemBoot();
     void FakeLoading();
     void CheckeredBorders(uint16_t fill, uint16_t dash);
@@ -50,19 +44,6 @@ public:
     void ReDraw(const DateTime &t);
     void bg() { _tft->fillScreen(0x40A3); }
 } Draw;
-
-void DrawUI::_cacheClockBounds()
-{
-    if (_clockBoundsCached)
-        return;
-
-    uint8_t _clockW;
-
-    _tft->getTextBounds("00:00", 0, 0, &_clockW, nullptr);
-
-    _clockX = (128 - _clockW) / 2;
-    _clockBoundsCached = true;
-}
 
 inline bool DrawUI::_hideField(const Field &f)
 {
@@ -143,7 +124,13 @@ void DrawUI::Time(const DateTime &t)
     const char *ampm = rtc.rtcConnected() ? _hideField(FIELD_AMPM) ? blink : t.midday() : "??:??";
 
     _tft->setTextSize(CLOCK_SIZE);
-    _cacheClockBounds();
+    if (!_clockBoundsCached)
+    {
+        uint8_t _clockW;
+        _tft->getTextBounds("00:00", 0, 0, &_clockW, nullptr);
+        _clockX = (128 - _clockW) / 2;
+        _clockBoundsCached = true;
+    }
     _tft->setCursor(_clockX, 50);
 
     if (rtc.rtcConnected())
@@ -199,8 +186,7 @@ void DrawUI::Date(const DateTime &t)
     else _tft->print(F("  RtcError"));
 }
 
-template<typename T>
-void DrawUI::Bottom(const T t)
+void DrawUI::Bottom(const char* t)
 {
     _clearLine(140, 12);
     _CenteredText(t, 140, BOTTOM_SIZE, GREEN);
@@ -255,8 +241,7 @@ void DrawUI::CheckeredBorders(uint16_t fillColor = M_COLORS::ClockColor(), uint1
 
 void DrawUI::ReDraw(const DateTime &t = rtc.s_now)
 {
-    Time(t);
-    Date(t);
+    Time(t); Date(t);
 }
 
 void DrawUI::TextColorChange(boolean saveColor = false)
