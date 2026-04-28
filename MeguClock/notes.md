@@ -25,3 +25,5 @@ into barebones. Also less spaghetti code pls.
 - 4/9/26 @ 4:16AM - I have managed to get 61% NO WAY!
 
 - 4/13/26 @ 11:38AM - I have now reached 60% by reducing the bottom texts from 46 to 35 because I have no choice whatsoever. Keep in mind It only achieve 60% if I didn't include the jingle opening, its still 61% if its included.
+
+- 4/16/26 @ 12:44AM - Removed 5 more bottom messages to achieve 60% completely with opening jingle included.
