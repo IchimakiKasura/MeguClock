@@ -4,6 +4,11 @@
 #include "assets/meguminLogo.h"
 #include "config/ColorConfig.hpp"
 
+extern void Jingle(uint8_t jingleNumber,
+            bool blocking = false,
+            bool changeBorders = false,
+            uint8_t delays = 0);
+
 enum Field
 {
     FIELD_HOUR,
@@ -14,7 +19,7 @@ enum Field
     FIELD_YEAR
 } selected = FIELD_HOUR;
 
-class DrawUI
+class DrawUI : M_COLORS
 {
 private:
     MeguClock_ST7735 *_tft;
@@ -37,8 +42,7 @@ public:
     void Time(const DateTime &t);
     void Date(const DateTime &t);
     void Bottom(const char* str);
-    void SystemBoot();
-    void FakeLoading();
+    void SystemBoot(bool skip);
     void CheckeredBorders(uint16_t fill, uint16_t dash);
     void TextColorChange(boolean saveColor);
     void ReDraw(const DateTime &t);
@@ -136,20 +140,20 @@ void DrawUI::Time(const DateTime &t)
     if (rtc.rtcConnected())
     {
         p2s(Buf, "%02d", t.twelveHour());
-        _tft->setTextColor(_hideField(FIELD_HOUR) ? RED : M_COLORS::ClockColor());
+        _tft->setTextColor(_hideField(FIELD_HOUR) ? RED : ClockColor());
         _tft->print(_hideField(FIELD_HOUR) ? blink : Buf);
 
         _tft->setTextColor(WHITE);
         _tft->print(":");
 
         p2s(Buf, "%02d", t.minute());
-        _tft->setTextColor(_hideField(FIELD_MIN) ? RED : M_COLORS::ClockColor());
+        _tft->setTextColor(_hideField(FIELD_MIN) ? RED : ClockColor());
         _tft->print(_hideField(FIELD_MIN) ? blink : Buf);
     }
     else _tft->print(F("??:??"));
 
     _clearLine(80, 20);
-    _CenteredText(ampm, 80, AMPM_SIZE, _hideField(FIELD_AMPM) ? RED : M_COLORS::ClockColor());
+    _CenteredText(ampm, 80, AMPM_SIZE, _hideField(FIELD_AMPM) ? RED : ClockColor());
     // _Logo(64,80,3);
 }
 
@@ -161,7 +165,7 @@ void DrawUI::Date(const DateTime &t)
     bool hideMo = _hideField(FIELD_MONTH);
     bool hideDay = _hideField(FIELD_DAY);
     bool hideYr = _hideField(FIELD_YEAR);
-    uint16_t c = ((hideMo || hideDay || hideYr) ? RED : M_COLORS::DateColor());
+    uint16_t c = ((hideMo || hideDay || hideYr) ? RED : DateColor());
 
     _tft->setTextSize(DATE_SIZE);
     _tft->setTextColor(c);
@@ -192,17 +196,19 @@ void DrawUI::Bottom(const char* t)
     _CenteredText(t, 140, BOTTOM_SIZE, GREEN);
 }
 
-void DrawUI::SystemBoot()
-{
-    _CenteredText("MEGU-CLOCK", 90, 2, WHITE);
-    _Logo(64, 55, 3);
-}
-
-void DrawUI::FakeLoading()
+void DrawUI::SystemBoot(bool skip = false)
 {
     static const uint8_t barSteps[] = {0, 25, 50, 55, 60, 65, 85, 100};
     static const uint8_t delays[] = {5, 5, 5, 3, 3, 3, 5, 10};
     
+    _CenteredText("MEGU-CLOCK", 90, 2, WHITE);
+    _Logo(64, 55, 3);
+
+    if(!skip) {
+        Jingle(CHIISANA_BOKENSHA_JINGLE, true);
+        delay(100);
+    }
+
     _CenteredText("system loading", 125, 1, YELLOW);
 
     _tft->fillRect(40, 145, 42, 6, WHITE);
@@ -215,7 +221,7 @@ void DrawUI::FakeLoading()
     }
 }
 
-void DrawUI::CheckeredBorders(uint16_t fillColor = M_COLORS::ClockColor(), uint16_t dashColor = M_COLORS::DateColor())
+void DrawUI::CheckeredBorders(uint16_t fillColor = ClockColor(), uint16_t dashColor = DateColor())
 {
     uint8_t hY[] = {1, 38, 128, 158};
     static bool swapColors = false;
@@ -246,15 +252,15 @@ void DrawUI::ReDraw(const DateTime &t = rtc.s_now)
 
 void DrawUI::TextColorChange(boolean saveColor = false)
 {
-    M_COLORS::ClockColor_index = (M_COLORS::ClockColor_index + 1) % 8;
-    M_COLORS::DateColor_index = (M_COLORS::ClockColor_index + 1 + rand(7)) % 8;
+    ClockColor_index = (ClockColor_index + 1) % 8;
+    DateColor_index = (ClockColor_index + 1 + rand(7)) % 8;
 
-    if (M_COLORS::DateColor_index == M_COLORS::ClockColor_index)
-        M_COLORS::DateColor_index = (M_COLORS::DateColor_index + 1) % 8;
+    if (DateColor_index == ClockColor_index)
+        DateColor_index = (DateColor_index + 1) % 8;
 
-    CheckeredBorders(M_COLORS::ClockColor(), M_COLORS::DateColor());
+    CheckeredBorders(ClockColor(), DateColor());
 
     ReDraw();
 
-    if (saveColor) M_COLORS::Save();
+    if (saveColor) Save();
 }

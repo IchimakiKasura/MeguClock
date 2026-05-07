@@ -18,7 +18,6 @@
             - 10:00 PM `Short ahh Twinkle star smh`
         - has random ahh messages every 10 seconds at the bottom. *(can be customized through code ofc)*
         - has an epic border.
-        - Uses only 60%? of program storage space whaaat? idfk.
 
     - Includes modified libraries (Reduced Flash Storage)
         - MeguClock_DS3231 (Originally from Adafruit RTCLib)
@@ -115,11 +114,6 @@ void initialize()
 #endif
     M_COLORS::Load();
     Draw.SystemBoot();
-
-    Jingle(CHIISANA_BOKENSHA_JINGLE, true);
-    delay(100);
-
-    Draw.FakeLoading();
 
 #ifndef CUSTOM_PINS
     DDRD = 0x20;

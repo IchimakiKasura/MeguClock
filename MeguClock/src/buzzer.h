@@ -77,7 +77,7 @@ struct JingleState
     bool borders = false;
 } jingleState;
 
-void quickBeepStart(int duration = 50)
+void quickBeepStart()
 {
     tone(
 #ifdef CUSTOM_PINS
@@ -86,7 +86,7 @@ void quickBeepStart(int duration = 50)
         5
 #endif
         ,
-        1000, duration);
+        1000, 50);
 }
 
 void Jingle(uint8_t jingleNumber,

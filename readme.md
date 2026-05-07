@@ -20,7 +20,6 @@
     - 10:00 PM `Short ahh Twinkle star smh`
 - Has random ahh messages every 10 seconds at the bottom. *(can be customized through code ofc)*
 - Has an epic border.
-- Uses only 65%? of program storage space whaaat? idfk.
 <div align="center">
 
 ## requirements?

@@ -13,8 +13,8 @@ MeguClock_ST7735 (symlink)
 
 # embedded pcb
 Embedded PCB/MeguClock
+Embedded PCB/**.png
 plan.txt
 parts.txt
 ATMEGA328P Pinout.jpg
 Nano_SCHEM.jpg
-**.png
