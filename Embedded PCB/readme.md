@@ -114,57 +114,52 @@ tests:
         - 0.6 for 3.3v lines
         - 0.2mm for normal signal lines
 
+## [REVISION 3.5]
+
+<img src="REV3.5/Test_1_back_board.png" height="120px">
+<img src="REV3.5/Test_1_front_board.png" height="120px">
+<img src="REV3.5/Test_1_front_board_no_comp.png" height="120px">
+
+- TEST 1
+    - Fixed the very fatal mistake on the past revisions.
+        - Don't use the rev 2,3 as it imposes a very fatal wrong wiring though not really fatal but the DI and DO on the Flash chip (W25Q) is accidentally swapped. Swapping these wiring will fix it.
+        - Might no longer use 74LVC245 and use the TXS0108 instead since the 74LVC245 is one directional as TXS0108 is bi-directional.
+        - Fixed SDA and SCL was swapped on RTC.
+        - Fixed Amplifier connections, got too much RC filtering + wrong wiring.
+        - removed extra decouple on RTC battery.
+    - Decouplers are 1-3mm closer to the ic's.
+    - Removed Buzzer.
+    - Added reset switch.
+
+
+
 | BILLS OF MATERIALS |                  |                        |                 |
 |--------------------|------------------|------------------------|-----------------|
 | **REV**            | **REF**          | **NAME**               | **QTY PER BRD** |
-| REV 2              | C1,C5            | 10uF (SMD1206)         | 2               |
-|                    | C2-3             | 22pF Radial Ceramic    | 2               |
-|                    | C4               | 1uF Radial Ceramic     | 1               |
-|                    | C7               | 10uF Radial Ceramic    | 1               |
-|                    | C8-9, C6, C13-17 | 100nF (SMD0805)        | 8               |
-|                    | D2               | SS14 DIODE             | 1               |
-|                    | R1               | 220 ohms               | 1               |
-|                    | R2,R3            | 4.7k ohms              | 2               |
-|                    | R4-5, R7-9       | 10k ohms               | 5               |
-|                    | R6               | 1k ohms                | 1               |
-|                    | U1               | ATmega328P-P           | 1               |
-|                    | U2               | AMS1117-3.3            | 1               |
-|                    | U3               | DS3231M                | 1               |
-|                    | U4               | 8002A                  | 1               |
-|                    | U5               | W25Q64 / W25Q128       | 1               |
-|                    | U6               | 74LVC245               | 1               |
-|                    | Y1               | 16mhz (SMD5032 / HC49) | 1               |
-|                    | USBC1            | USB-C 6P               | 1               |
-|                    | SW               | 4P TACT SWITCH 6x6x5   | 3               |
-|                    | J1               | 2P HEADER              | 1               |
-|                    | J2               | 8P HEADER              | 1               |
-|                    | J3               | 2x3P HEADER            | 1               |
-|                    | BT1              | CR2032 HOLDER          | 1               |
-|                    | BZ1              | BUZZER                 | 1               |
-|                    | D1               | LED                    | 1               |
-|                    | U1               | 28P DIP                | 1               |
+| REV 2              | CANCELLED        | CANCELLED              | CANCELLED       |
 |                    |                  |                        |                 |
-| REV 3              | C1,C5,C7         | 10uF (SMD1206)         | 3               |
-|                    | C2-3             | 22pF (SMD1206)         | 2               |
-|                    | C4               | 1uF (SMD1206)          | 1               |
-|                    | C8-9, C6, C13-17 | 100nF (SMD1206)        | 8               |
+| REV 3              | CANCELLED        | CANCELLED              | CANCELLED       |
+|                    |                  |                        |                 |
+| REV 3.5            | C1,C5,C7         | 10uF (SMD1206)         | 3               |
+|                    | C1,C5,C11        | 10uF (SMD1206)         | 3               |
+|                    | C2,C3            | 22pF (SMD1206)         | 2               |
+|                    | C10              | 1uF (SMD1206)          | 1               |
+|                    | C4,C7-9,C12-20   | 100nF (SMD1206)        | 12              |
 |                    | D2               | SS14 DIODE             | 1               |
-|                    | R1               | 220 ohms (SMD1206)     | 1               |
 |                    | R2,R3            | 4.7k ohms (SMD1206)    | 2               |
-|                    | R4-5, R7-9       | 10k ohms (SMD1206)     | 5               |
-|                    | R6               | 1k ohms (SMD1206)      | 1               |
+|                    | R1,R4-5,R7-9     | 10k ohms (SMD1206)     | 6               |
+|                    | R6               | 100k ohms (SMD1206)    | 1               |
 |                    | U1               | ATmega328-A (SMD)      | 1               |
 |                    | U2               | AMS1117-3.3            | 1               |
 |                    | U3               | DS3231M                | 1               |
 |                    | U4               | 8002A                  | 1               |
-|                    | U5               | W25Q64 / W25Q128       | 1               |
-|                    | U6               | 74LVC245               | 1               |
+|                    | U5               | W25Q64                 | 1               |
+|                    | U7               | TXB0104                | 1               |
 |                    | Y1               | 16mhz (SMD5032)        | 1               |
 |                    | USBC1            | USB-C 6P               | 1               |
-|                    | SW               | 4P TACT SWITCH 6x6x5   | 3               |
+|                    | SW               | 4P TACT SWITCH 6x6x5   | 4               |
 |                    | J1               | 2P HEADER              | 1               |
 |                    | J2               | 8P HEADER              | 1               |
 |                    | J3               | 2x3P HEADER            | 1               |
 |                    | BT1              | CR2032 HOLDER          | 1               |
-|                    | BZ1              | BUZZER                 | 1               |
 |                    | D1               | LED                    | 1               |
